@@ -1,6 +1,6 @@
 // components/forms/CaffeineIntakeForm.jsx
 import React, { useState, useEffect, useMemo, useImperativeHandle, forwardRef } from 'react';
-import {FormSelect,FormInput} from '../ui'
+import {FormSelect, FormInput} from '../ui'
 /**
  * Formulario para registrar o editar la ingesta de cafeína
  */
@@ -8,7 +8,8 @@ const CaffeineIntakeForm = forwardRef(({
   beverages = [],
   initialData = null,
   onSubmit,
-  isLoading = false
+  isLoading = false,
+  selectedDate = null // Añadido para recibir la fecha seleccionada
 }, ref) => {
   // Estado del formulario
   const [formData, setFormData] = useState({
@@ -33,8 +34,7 @@ const CaffeineIntakeForm = forwardRef(({
   }, [beverages]);
 
   // Inicializar el formulario con los datos iniciales o valores por defecto
-  // Inicializar el formulario con los datos iniciales o valores por defecto
-useEffect(() => {
+  useEffect(() => {
     if (initialData) {
       // Modo edición
       setFormData({
@@ -47,9 +47,8 @@ useEffect(() => {
       const beverage = beverages.find(b => b.id === initialData.beverage_id);
       setSelectedBeverage(beverage || null);
     } else {
-      // Modo creación
-      // Establecer fecha y hora actual
-      setCurrentDateTime();
+      // Modo creación - Usar la fecha seleccionada o la actual
+      setDateTimeBasedOnSelection();
 
       // Establecer primera bebida como seleccionada si hay disponibles
       if (beverages.length > 0) {
@@ -60,16 +59,23 @@ useEffect(() => {
         setSelectedBeverage(beverages[0]);
       }
     }
-  }, [initialData, beverages]);
+  }, [initialData, beverages, selectedDate]);
 
-  // Establecer la fecha y hora actual
-  const setCurrentDateTime = () => {
+  // Establecer la fecha y hora en base a la selección o usar fecha actual
+  const setDateTimeBasedOnSelection = () => {
+    // Usar la fecha seleccionada si está disponible, de lo contrario usar la fecha actual
+    const dateToUse = selectedDate ? new Date(selectedDate) : new Date();
+
+    // Mantener solo la hora actual
     const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
+    dateToUse.setHours(now.getHours());
+    dateToUse.setMinutes(now.getMinutes());
+
+    const year = dateToUse.getFullYear();
+    const month = String(dateToUse.getMonth() + 1).padStart(2, '0');
+    const day = String(dateToUse.getDate()).padStart(2, '0');
+    const hours = String(dateToUse.getHours()).padStart(2, '0');
+    const minutes = String(dateToUse.getMinutes()).padStart(2, '0');
 
     const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
     setFormData(prev => ({

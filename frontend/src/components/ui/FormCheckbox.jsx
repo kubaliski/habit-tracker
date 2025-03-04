@@ -1,4 +1,3 @@
-// components/ui/FormCheckbox.jsx
 import React from 'react';
 
 /**

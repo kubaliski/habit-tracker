@@ -100,6 +100,67 @@
     border-radius: var(--border-radius-sm);
     margin-right: var(--spacing-2);
   }
+  /* Contenedor y barras de progreso para hábitos */
+.completion-bar-container {
+  width: 100%;
+  height: 8px;
+  background-color: var(--color-gray-200);
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+  margin-top: var(--spacing-2);
+}
+
+.completion-bar {
+  height: 100%;
+  background-color: var(--color-primary);
+  border-radius: var(--border-radius-sm);
+  transition: width 0.3s ease;
+}
+
+/* Estilos para selector de hábitos */
+.habit-selector {
+  display: flex;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-4);
+  flex-wrap: wrap;
+}
+
+/* Mensaje cuando no hay datos */
+.empty-stats-message {
+  color: var(--color-gray-500);
+  text-align: center;
+  margin: var(--spacing-6) 0;
+  font-size: var(--font-size-md);
+}
+
+/* Contenedor de estadísticas */
+.stats-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: var(--spacing-4);
+}
+
+/* Distribución de cafeína */
+.caffeine-distribution {
+  margin-top: var(--spacing-5);
+  background-color: var(--color-gray-100);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-4);
+}
+
+.caffeine-chart {
+  margin-top: var(--spacing-3);
+}
+
+.chart-item {
+  margin-bottom: var(--spacing-3);
+}
+
+/* Selector de período */
+.stats-period-selector {
+  display: flex;
+  gap: var(--spacing-2);
+}
 
   /* Media queries específicas para este componente */
   @media (max-width: 768px) {

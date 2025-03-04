@@ -28,9 +28,29 @@ function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDel
     console.log("[CaffeinePanel] Props recibidas - todayTotal:", todayTotal);
   }, [todayTotal]);
 
-  // Convertir fecha a formato string YYYY-MM-DD para comparaciones
+  // Formatear fecha a formato local YYYY-MM-DD para comparaciones
+  const formatDateToLocalString = (dateInput) => {
+    if (!dateInput) return '';
+
+    try {
+      const year = dateInput.getFullYear();
+      const month = String(dateInput.getMonth() + 1).padStart(2, '0');
+      const day = String(dateInput.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    } catch (e) {
+      console.error("Error formateando fecha:", e);
+      return '';
+    }
+  };
+
   const dateString = useMemo(() => {
-    return date.toISOString().split('T')[0];
+    return formatDateToLocalString(date);
+  }, [date]);
+
+  // Verificar si el día seleccionado es hoy
+  const isToday = useMemo(() => {
+    const today = new Date();
+    return formatDateToLocalString(date) === formatDateToLocalString(today);
   }, [date]);
 
   // Cargar las bebidas disponibles
@@ -47,18 +67,14 @@ function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDel
     loadBeverages();
   }, []);
 
-  // Filtrar intakes para el día actual
-  const todayIntakes = useMemo(() => {
+  // Ordenar intakes por hora descendente
+  const sortedIntakes = useMemo(() => {
     if (!intakes || intakes.length === 0) return [];
 
-    return intakes.filter(intake => {
-      if (!intake.timestamp) return false;
-      const intakeDate = new Date(intake.timestamp);
-      return intakeDate.toISOString().split('T')[0] === dateString;
-    }).sort((a, b) => {
+    return [...intakes].sort((a, b) => {
       return new Date(b.timestamp) - new Date(a.timestamp);
     });
-  }, [intakes, dateString]);
+  }, [intakes]);
 
   // Calcular el porcentaje de cafeína consumido (límite recomendado: 400mg)
   const caffeinePercentage = useMemo(() => {
@@ -177,6 +193,20 @@ function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDel
     return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
   };
 
+  // Formatear la fecha para mostrar
+  const formatDate = (dateInput) => {
+    if (!dateInput) return '';
+    // Verificar si es hoy
+    if (isToday) {
+      return "Hoy";
+    }
+    // Si no es hoy, mostrar la fecha formateada
+    return dateInput.toLocaleDateString('es-ES', {
+      day: 'numeric',
+      month: 'long'
+    });
+  };
+
   // Renderizar el footer del modal
   const renderModalFooter = () => (
     <>
@@ -235,7 +265,7 @@ function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDel
 
         <div className="caffeine-info">
           <div className="caffeine-total">{Math.round(todayTotal)} mg</div>
-          <div className="caffeine-label">de cafeína hoy</div>
+          <div className="caffeine-label">de cafeína {formatDate(date)}</div>
 
           <div className="caffeine-limit">
             <div
@@ -246,10 +276,10 @@ function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDel
         </div>
       </div>
 
-      {todayIntakes.length > 0 && (
+      {sortedIntakes.length > 0 ? (
         <div className="caffeine-log">
-          <div className="caffeine-log-title">Registros de hoy</div>
-          {todayIntakes.slice(0, 3).map(intake => (
+          <div className="caffeine-log-title">Registros {isToday ? "de hoy" : "del día"}</div>
+          {sortedIntakes.slice(0, 3).map(intake => (
             <div key={intake.id} className="caffeine-log-item">
               <div className="caffeine-log-time">{formatTime(intake.timestamp)}</div>
               <div className="caffeine-log-beverage">{intake.beverage_name}</div>
@@ -283,11 +313,15 @@ function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDel
               </div>
             </div>
           ))}
-          {todayIntakes.length > 3 && (
+          {sortedIntakes.length > 3 && (
             <div className="caffeine-log-more">
-              +{todayIntakes.length - 3} más
+              +{sortedIntakes.length - 3} más
             </div>
           )}
+        </div>
+      ) : (
+        <div className="caffeine-log-empty">
+          No hay registros de cafeína para este día
         </div>
       )}
 
@@ -304,6 +338,7 @@ function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDel
           initialData={currentIntake}
           onSubmit={handleFormSubmit}
           isLoading={loading}
+          selectedDate={date} // Pasar la fecha seleccionada al formulario
         />
       </Modal>
 
