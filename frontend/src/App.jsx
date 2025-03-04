@@ -32,31 +32,37 @@ function App() {
     todayTotal: 0
   });
 
+  useEffect(() => {
+    console.log("[App] caffeineData actualizado:", caffeineData);
+  }, [caffeineData]);
   // Formatear fecha actual para consultas (YYYY-MM-DD)
   const formattedDate = date.toISOString().split('T')[0];
 
   // Función para cargar datos de cafeína
   const loadCaffeineData = async () => {
     try {
+      console.log("[App] Iniciando carga de datos de cafeína...");
       setLoading(prev => ({ ...prev, caffeine: true }));
 
       // Cargar ingestas de cafeína (por defecto, últimos 7 días)
       const intakes = await GetCaffeineIntakeRange("", "");
+      console.log("[App] Ingestas obtenidas:", intakes);
 
       // Cargar el total de hoy
       const todayData = await GetDailyCaffeineTotal(formattedDate);
+      console.log("[App] Total de cafeína para hoy:", todayData, "Fecha:", formattedDate);
 
       setCaffeineData({
         intakes: intakes || [],
         todayTotal: todayData?.total_caffeine || 0
       });
+      console.log("[App] Estado de cafeína actualizado con total:", todayData?.total_caffeine || 0);
     } catch (err) {
-      console.error("Error loading caffeine data:", err);
+      console.error("[App] Error loading caffeine data:", err);
     } finally {
       setLoading(prev => ({ ...prev, caffeine: false }));
     }
   };
-
   // Cargar todos los datos iniciales
   useEffect(() => {
     // Cargar información de la aplicación
@@ -97,18 +103,21 @@ function App() {
   // Manejar la creación de nuevas ingestas de cafeína
   const handleCaffeineIntakeCreated = async () => {
     // Recargar los datos de cafeína
+    console.log("[App] Ingesta de cafeína creada, recargando datos...");
     await loadCaffeineData();
   };
 
   // Manejar la eliminación de ingestas de cafeína
   const handleCaffeineIntakeDeleted = async () => {
     // Recargar los datos de cafeína
+    console.log("[App] Ingesta de cafeína creada, recargando datos...");
     await loadCaffeineData();
   };
 
   // Manejar la actualización de ingestas de cafeína
   const handleCaffeineIntakeUpdated = async () => {
     // Recargar los datos de cafeína
+    console.log("[App] Ingesta de cafeína creada, recargando datos...");
     await loadCaffeineData();
   };
 

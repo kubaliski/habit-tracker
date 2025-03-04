@@ -10,7 +10,9 @@ function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDel
   const [editingIntakeId, setEditingIntakeId] = useState(null);
   const [intakeDateTime, setIntakeDateTime] = useState('');
   const [loading, setLoading] = useState(false);
-
+  useEffect(() => {
+    console.log("[CaffeinePanel] Props recibidas - todayTotal:", todayTotal);
+  }, [todayTotal]);
   // Convertir fecha a formato string YYYY-MM-DD para comparaciones
   const dateString = useMemo(() => {
     return date.toISOString().split('T')[0];
@@ -67,15 +69,20 @@ function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDel
   // Calcular el porcentaje de cafeína consumido (límite recomendado: 400mg)
   const caffeinePercentage = useMemo(() => {
     const limit = 400; // 400mg es el límite diario recomendado
-    return Math.min(Math.round((todayTotal / limit) * 100), 100);
+    const percentage = Math.min(Math.round((todayTotal / limit) * 100), 100);
+    console.log("[CaffeinePanel] Calculando porcentaje:", percentage, "de todayTotal:", todayTotal);
+    return percentage;
   }, [todayTotal]);
 
   // Determinar el color de la barra de progreso según el porcentaje
   const caffeineBarClass = useMemo(() => {
-    if (caffeinePercentage >= 90) return 'caffeine-limit-bar danger';
-    if (caffeinePercentage >= 75) return 'caffeine-limit-bar warning';
-    return 'caffeine-limit-bar';
+    let barClass = 'caffeine-limit-bar';
+    if (caffeinePercentage >= 90) barClass = 'caffeine-limit-bar danger';
+    else if (caffeinePercentage >= 75) barClass = 'caffeine-limit-bar warning';
+    console.log("[CaffeinePanel] Clase de barra de cafeína:", barClass, "para porcentaje:", caffeinePercentage);
+    return barClass;
   }, [caffeinePercentage]);
+
 
   // Función para mostrar/ocultar el formulario de registro
   const toggleAddIntakeForm = () => {
@@ -164,7 +171,7 @@ function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDel
         setAmount(1);
         setIsEditingIntake(false);
         setEditingIntakeId(null);
-
+        console.log("[CaffeinePanel] Ingesta actualizada con éxito, ID:", editingIntakeId);
         // Notificar al componente padre que se ha actualizado una ingesta
         if (onIntakeUpdated && typeof onIntakeUpdated === 'function') {
           onIntakeUpdated(editingIntakeId);
@@ -183,6 +190,7 @@ function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDel
         // Limpiar formulario y ocultar
         setAmount(1);
         setIsAddingIntake(false);
+        console.log("[CaffeinePanel] Nueva ingesta creada con éxito:", newIntake);
 
         // Notificar al componente padre que se ha creado una nueva ingesta
         if (onIntakeCreated && typeof onIntakeCreated === 'function') {
@@ -205,7 +213,7 @@ function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDel
     setLoading(true);
     try {
       await DeleteCaffeineIntake(intakeId);
-
+      console.log("[CaffeinePanel] Ingesta eliminada con éxito, ID:", intakeId);
       // Notificar al componente padre que se ha eliminado una ingesta
       if (onIntakeDeleted && typeof onIntakeDeleted === 'function') {
         onIntakeDeleted(intakeId);

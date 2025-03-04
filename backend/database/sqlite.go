@@ -1001,59 +1001,61 @@ func (r *SQLiteRepo) DeleteCaffeineBeverage(id int) error {
 // ==================== MÉTODOS PARA REGISTROS DE CONSUMO DE CAFEÍNA ====================
 
 // CreateCaffeineIntake crea un nuevo registro de consumo de cafeína
-func (r *SQLiteRepo) CreateCaffeineIntake(intake models.NewCaffeineIntakeInput) (int, error) {
-	// Obtener información de la bebida
-	var beverage models.CaffeineBeverage
-	beverage, err := r.GetCaffeineBeverage(intake.BeverageID)
+func (r *SQLiteRepo) CreateCaffeineIntake(input models.NewCaffeineIntakeInput) (int, error) {
+	// Obtener información de la bebida para calcular total_caffeine
+	beverage, err := r.GetCaffeineBeverage(input.BeverageID)
 	if err != nil {
 		return 0, fmt.Errorf("error al obtener información de la bebida: %w", err)
 	}
 
-	// Calcular cafeína total si no se proporciona
-	totalCaffeine := intake.TotalCaffeine
-	if totalCaffeine == 0 {
-		// Calcular basado en la cantidad y el contenido de cafeína
-		if intake.Unit == beverage.StandardUnit {
-			totalCaffeine = (intake.Amount / beverage.StandardUnitValue) * beverage.CaffeineContent
-		} else {
-			// Si la unidad es diferente, usar la proporción directa (esto es una simplificación)
-			totalCaffeine = intake.Amount * beverage.CaffeineContent / beverage.StandardUnitValue
-		}
+	// Calcular el total de cafeína basado en la cantidad y el contenido de cafeína de la bebida
+	// Fórmula correcta: (cantidad * contenido_cafeína) / unidad_estándar_valor
+	totalCaffeine := (input.Amount * beverage.CaffeineContent)
+
+	// Si el input ya tenía un valor para totalCaffeine, respetarlo
+	if input.TotalCaffeine > 0 {
+		totalCaffeine = input.TotalCaffeine
 	}
 
-	timestamp, err := time.Parse("2006-01-02T15:04:05Z", intake.Timestamp)
+	// Establecer la unidad predeterminada si no se proporciona
+	unit := input.Unit
+	if unit == "" {
+		unit = beverage.StandardUnit
+	}
+
+	timestamp, err := time.Parse(time.RFC3339, input.Timestamp)
 	if err != nil {
 		return 0, fmt.Errorf("error al parsear timestamp: %w", err)
 	}
 
+	// Insertar el registro - CORREGIDO: añadir beverage_name en los campos y valores
 	query := `
-		INSERT INTO caffeine_intake (
-			timestamp, beverage_id, beverage_name, amount, unit, total_caffeine,
-			perceived_effects, related_activity, notes, created_at
-		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-	`
-	now := time.Now()
+        INSERT INTO caffeine_intake (
+            timestamp, beverage_id, beverage_name, amount, unit, total_caffeine,
+            perceived_effects, related_activity, notes, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+    `
 
 	result, err := r.db.Exec(
 		query,
 		timestamp,
-		intake.BeverageID,
-		beverage.Name,
-		intake.Amount,
-		intake.Unit,
+		input.BeverageID,
+		beverage.Name, // AÑADIDO: pasar el nombre de la bebida
+		input.Amount,
+		unit,
 		totalCaffeine,
-		intake.PerceivedEffects,
-		intake.RelatedActivity,
-		intake.Notes,
-		now,
+		input.PerceivedEffects,
+		input.RelatedActivity,
+		input.Notes,
 	)
+
 	if err != nil {
 		return 0, fmt.Errorf("error al crear registro de consumo de cafeína: %w", err)
 	}
 
 	id, err := result.LastInsertId()
 	if err != nil {
-		return 0, fmt.Errorf("error al obtener ID: %w", err)
+		return 0, fmt.Errorf("error al obtener ID de registro insertado: %w", err)
 	}
 
 	return int(id), nil
@@ -1198,68 +1200,107 @@ func (r *SQLiteRepo) GetCaffeineIntakeRange(startDate, endDate string) ([]models
 }
 
 // UpdateCaffeineIntake actualiza un registro de consumo de cafeína
-func (r *SQLiteRepo) UpdateCaffeineIntake(id int, intake models.UpdateCaffeineIntakeInput) error {
-	// Construir la consulta dinámicamente basada en los campos proporcionados
-	updates := []string{}
-	args := []interface{}{}
+func (r *SQLiteRepo) UpdateCaffeineIntake(id int, input models.UpdateCaffeineIntakeInput) error {
+	// Preparar la consulta y los parámetros
+	query := "UPDATE caffeine_intake SET "
+	params := []interface{}{}
 
-	// Si se cambia la bebida, obtener su nombre
-	var beverageName string
-	if intake.BeverageID > 0 {
-		beverage, err := r.GetCaffeineBeverage(intake.BeverageID)
+	// Campos a actualizar
+	updateFields := []string{}
+
+	if input.Timestamp != "" {
+		updateFields = append(updateFields, "timestamp = ?")
+		params = append(params, input.Timestamp)
+	}
+
+	if input.BeverageID > 0 {
+		updateFields = append(updateFields, "beverage_id = ?")
+		params = append(params, input.BeverageID)
+
+		// Si se actualiza la bebida o la cantidad, recalcular total_caffeine
+		if input.Amount > 0 {
+			// Obtener información de la bebida
+			beverage, err := r.GetCaffeineBeverage(input.BeverageID)
+			if err != nil {
+				return fmt.Errorf("error al obtener información de la bebida: %w", err)
+			}
+
+			// Recalcular total_caffeine
+			totalCaffeine := input.Amount * beverage.CaffeineContent
+
+			updateFields = append(updateFields, "total_caffeine = ?")
+			params = append(params, totalCaffeine)
+
+			updateFields = append(updateFields, "amount = ?")
+			params = append(params, input.Amount)
+
+			if input.Unit != "" {
+				updateFields = append(updateFields, "unit = ?")
+				params = append(params, input.Unit)
+			}
+		}
+	} else if input.Amount > 0 {
+		// Si solo cambia la cantidad pero no la bebida, obtener el ID de bebida actual
+		var beverageID int
+		err := r.db.QueryRow("SELECT beverage_id FROM caffeine_intake WHERE id = ?", id).Scan(&beverageID)
+		if err != nil {
+			return fmt.Errorf("error al obtener el registro actual: %w", err)
+		}
+
+		// Obtener información de la bebida
+		beverage, err := r.GetCaffeineBeverage(beverageID)
 		if err != nil {
 			return fmt.Errorf("error al obtener información de la bebida: %w", err)
 		}
-		beverageName = beverage.Name
-		updates = append(updates, "beverage_id = ?", "beverage_name = ?")
-		args = append(args, intake.BeverageID, beverageName)
-	}
 
-	if intake.Timestamp != "" {
-		timestamp, err := time.Parse("2006-01-02T15:04:05Z", intake.Timestamp)
-		if err != nil {
-			return fmt.Errorf("error al parsear timestamp: %w", err)
+		// Recalcular total_caffeine
+		totalCaffeine := (input.Amount / beverage.StandardUnitValue) * beverage.CaffeineContent
+
+		updateFields = append(updateFields, "total_caffeine = ?")
+		params = append(params, totalCaffeine)
+
+		updateFields = append(updateFields, "amount = ?")
+		params = append(params, input.Amount)
+
+		if input.Unit != "" {
+			updateFields = append(updateFields, "unit = ?")
+			params = append(params, input.Unit)
 		}
-		updates = append(updates, "timestamp = ?")
-		args = append(args, timestamp)
+	} else if input.TotalCaffeine > 0 {
+		// Si se proporciona explícitamente un valor de total_caffeine
+		updateFields = append(updateFields, "total_caffeine = ?")
+		params = append(params, input.TotalCaffeine)
 	}
 
-	if intake.Amount > 0 {
-		updates = append(updates, "amount = ?")
-		args = append(args, intake.Amount)
+	if input.PerceivedEffects != "" {
+		updateFields = append(updateFields, "perceived_effects = ?")
+		params = append(params, input.PerceivedEffects)
 	}
 
-	if intake.Unit != "" {
-		updates = append(updates, "unit = ?")
-		args = append(args, intake.Unit)
+	if input.RelatedActivity != "" {
+		updateFields = append(updateFields, "related_activity = ?")
+		params = append(params, input.RelatedActivity)
 	}
 
-	if intake.TotalCaffeine > 0 {
-		updates = append(updates, "total_caffeine = ?")
-		args = append(args, intake.TotalCaffeine)
+	if input.Notes != "" {
+		updateFields = append(updateFields, "notes = ?")
+		params = append(params, input.Notes)
 	}
 
-	// Estos campos pueden ser vacíos, así que los actualizamos siempre
-	updates = append(updates, "perceived_effects = ?")
-	args = append(args, intake.PerceivedEffects)
-
-	updates = append(updates, "related_activity = ?")
-	args = append(args, intake.RelatedActivity)
-
-	updates = append(updates, "notes = ?")
-	args = append(args, intake.Notes)
-
-	// Si no hay nada que actualizar, salir
-	if len(updates) == 0 {
+	// Si no hay campos para actualizar, salir
+	if len(updateFields) == 0 {
 		return nil
 	}
 
-	query := fmt.Sprintf("UPDATE caffeine_intake SET %s WHERE id = ?", strings.Join(updates, ", "))
-	args = append(args, id)
+	// Completar la consulta
+	query += strings.Join(updateFields, ", ")
+	query += " WHERE id = ?"
+	params = append(params, id)
 
-	_, err := r.db.Exec(query, args...)
+	// Ejecutar la actualización
+	_, err := r.db.Exec(query, params...)
 	if err != nil {
-		return fmt.Errorf("error al actualizar consumo de cafeína: %w", err)
+		return fmt.Errorf("error al actualizar registro de consumo de cafeína: %w", err)
 	}
 
 	return nil
