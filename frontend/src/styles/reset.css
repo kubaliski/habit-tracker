@@ -1,0 +1,108 @@
+/* reset.css - Reset básico para eliminar márgenes, paddings y otras propiedades por defecto */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: var(--font-family-sans);
+    color: var(--color-gray-700);
+    background-color: var(--color-gray-50);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.2;
+    margin-bottom: var(--spacing-4);
+    color: var(--color-gray-900);
+  }
+
+  p {
+    margin-bottom: var(--spacing-4);
+  }
+
+  a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color var(--transition-fast) var(--transition-timing);
+  }
+
+  a:hover {
+    color: var(--color-primary-dark);
+  }
+
+  img, svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  input, button, textarea, select {
+    font: inherit;
+    color: inherit;
+  }
+
+  button {
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+
+  ul, ol {
+    list-style: none;
+  }
+
+  /* Añadir accesibilidad para elementos que tienen focus */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  /* Quitar el focus visible para aquellos usuarios que utilizan el ratón */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* Hacer que el placeholder sea más suave */
+  ::placeholder {
+    color: var(--color-gray-400);
+    opacity: 1;
+  }
+
+  /* Estilos para scroll bars personalizados (solo funciona en WebKit y Blink) */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-gray-100);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-gray-300);
+    border-radius: var(--border-radius-full);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-gray-400);
+  }
+
+  /* Deshabilitar los estilos por defecto de algunos elementos en dispositivos móviles */
+  input,
+  textarea,
+  button,
+  select,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }

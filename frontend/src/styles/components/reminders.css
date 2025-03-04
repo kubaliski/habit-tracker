@@ -1,0 +1,65 @@
+/* reminders.css - Estilos para el widget de recordatorios */
+
+.reminders-widget {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .reminders-list {
+    flex-grow: 1;
+    overflow-y: auto;
+  }
+
+  .reminder-item {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-2) 0;
+    border-bottom: 1px solid var(--color-gray-200);
+  }
+
+  .reminder-checkbox {
+    margin-right: var(--spacing-2);
+  }
+
+  .reminder-content {
+    flex-grow: 1;
+  }
+
+  .reminder-title {
+    font-weight: var(--font-weight-medium);
+  }
+
+  .reminder-time {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+  }
+
+  .reminder-actions {
+    display: flex;
+    gap: var(--spacing-1);
+  }
+
+  .reminder-add {
+    display: flex;
+    margin-top: var(--spacing-3);
+    padding: var(--spacing-2);
+    border-top: 1px solid var(--color-gray-200);
+  }
+
+  .reminder-input {
+    flex-grow: 1;
+    padding: var(--spacing-1) var(--spacing-2);
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-sm);
+  }
+
+  .reminder-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+  }
+
+  .reminder-add-button {
+    margin-left: var(--spacing-2);
+  }

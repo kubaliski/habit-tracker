@@ -1,0 +1,239 @@
+/* layout.css - Estilos para el layout general y la estructura del dashboard */
+
+/* Contenedor principal */
+.container {
+    width: 100%;
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: 0 var(--container-padding);
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-4) 0;
+    margin-bottom: var(--spacing-6);
+  }
+
+  .header-logo {
+    display: flex;
+    align-items: center;
+  }
+
+  .header-logo img {
+    height: 40px;
+    margin-right: var(--spacing-3);
+  }
+
+  .header-logo h1 {
+    font-size: var(--font-size-xl);
+    margin-bottom: 0;
+  }
+
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
+  }
+
+  /* Bento Grid Layout */
+  .bento-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--bento-gap);
+    margin-bottom: var(--spacing-8);
+  }
+
+  /* Bento Card - Elemento base para todos los paneles */
+  .bento-card {
+    background-color: var(--bento-card-bg);
+    border-radius: var(--bento-border-radius);
+    box-shadow: var(--bento-card-shadow);
+    padding: var(--bento-card-padding);
+    transition: transform var(--transition-normal) var(--transition-timing),
+                box-shadow var(--transition-normal) var(--transition-timing);
+    overflow: hidden;
+  }
+
+  .bento-card:hover {
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* Cabecera de las tarjetas Bento */
+  .bento-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-4);
+  }
+
+  .bento-card-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: 0;
+  }
+
+  .bento-card-subtitle {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+    margin-top: var(--spacing-1);
+  }
+
+  .bento-card-actions {
+    display: flex;
+    gap: var(--spacing-2);
+  }
+
+  /* Contenido de las tarjetas Bento */
+  .bento-card-content {
+    height: 100%;
+  }
+
+  /* Tamaños predefinidos para los componentes (spans) */
+  .span-1 {
+    grid-column: span 1;
+  }
+
+  .span-2 {
+    grid-column: span 2;
+  }
+
+  .span-3 {
+    grid-column: span 3;
+  }
+
+  .span-4 {
+    grid-column: span 4;
+  }
+
+  .span-5 {
+    grid-column: span 5;
+  }
+
+  .span-6 {
+    grid-column: span 6;
+  }
+
+  .span-7 {
+    grid-column: span 7;
+  }
+
+  .span-8 {
+    grid-column: span 8;
+  }
+
+  .span-9 {
+    grid-column: span 9;
+  }
+
+  .span-10 {
+    grid-column: span 10;
+  }
+
+  .span-11 {
+    grid-column: span 11;
+  }
+
+  .span-12 {
+    grid-column: span 12;
+  }
+
+  /* Filas para los componentes */
+  .row-1 {
+    grid-row: span 1;
+  }
+
+  .row-2 {
+    grid-row: span 2;
+  }
+
+  .row-3 {
+    grid-row: span 3;
+  }
+
+  .row-4 {
+    grid-row: span 4;
+  }
+
+  /* Media queries para diseño responsive */
+  @media (max-width: 1200px) {
+    .bento-grid {
+      grid-template-columns: repeat(8, 1fr);
+    }
+
+    .span-3, .span-4 {
+      grid-column: span 4;
+    }
+
+    .span-5, .span-6, .span-7, .span-8 {
+      grid-column: span 8;
+    }
+
+    .span-9, .span-10, .span-11, .span-12 {
+      grid-column: span 8;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .bento-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .span-2, .span-3, .span-4 {
+      grid-column: span 4;
+    }
+
+    .span-5, .span-6, .span-7, .span-8,
+    .span-9, .span-10, .span-11, .span-12 {
+      grid-column: span 4;
+    }
+
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .header-nav {
+      margin-top: var(--spacing-4);
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .bento-grid {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-4);
+    }
+
+    .span-1, .span-2, .span-3, .span-4,
+    .span-5, .span-6, .span-7, .span-8,
+    .span-9, .span-10, .span-11, .span-12 {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: var(--spacing-8);
+    padding: var(--spacing-6) 0;
+    border-top: 1px solid var(--color-gray-200);
+    color: var(--color-gray-500);
+    font-size: var(--font-size-sm);
+  }
+
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    .footer-content {
+      flex-direction: column;
+      gap: var(--spacing-4);
+      text-align: center;
+    }
+  }

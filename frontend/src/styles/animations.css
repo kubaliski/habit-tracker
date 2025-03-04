@@ -1,0 +1,215 @@
+/* animations.css - Animaciones reutilizables para la aplicación */
+
+/* Fadeins */
+@keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes fadeInRight {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Escalados */
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes scaleOut {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+  }
+
+  /* Pulse para llamar la atención */
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  /* Efecto de shake para errores o alertas */
+  @keyframes shake {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+      transform: translateX(-5px);
+    }
+    20%, 40%, 60%, 80% {
+      transform: translateX(5px);
+    }
+  }
+
+  /* Spinner para carga */
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Clases para aplicar animaciones */
+  .animate-fadeIn {
+    animation: fadeIn var(--transition-normal) var(--transition-timing);
+  }
+
+  .animate-fadeInUp {
+    animation: fadeInUp var(--transition-normal) var(--transition-timing);
+  }
+
+  .animate-fadeInDown {
+    animation: fadeInDown var(--transition-normal) var(--transition-timing);
+  }
+
+  .animate-fadeInLeft {
+    animation: fadeInLeft var(--transition-normal) var(--transition-timing);
+  }
+
+  .animate-fadeInRight {
+    animation: fadeInRight var(--transition-normal) var(--transition-timing);
+  }
+
+  .animate-scaleIn {
+    animation: scaleIn var(--transition-normal) var(--transition-timing);
+  }
+
+  .animate-scaleOut {
+    animation: scaleOut var(--transition-normal) var(--transition-timing);
+  }
+
+  .animate-pulse {
+    animation: pulse var(--transition-normal) var(--transition-timing) infinite;
+  }
+
+  .animate-shake {
+    animation: shake var(--transition-fast) var(--transition-timing);
+  }
+
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+
+  /* Duración de animaciones */
+  .duration-fast {
+    animation-duration: var(--transition-fast);
+  }
+
+  .duration-normal {
+    animation-duration: var(--transition-normal);
+  }
+
+  .duration-slow {
+    animation-duration: var(--transition-slow);
+  }
+
+  /* Delays de animaciones */
+  .delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .delay-300 {
+    animation-delay: 300ms;
+  }
+
+  .delay-500 {
+    animation-delay: 500ms;
+  }
+
+  /* Efectos de transición para hover */
+  .hover-lift {
+    transition: transform var(--transition-fast) var(--transition-timing);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-3px);
+  }
+
+  .hover-shadow {
+    transition: box-shadow var(--transition-fast) var(--transition-timing);
+  }
+
+  .hover-shadow:hover {
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* Transición para elementos que aparecen y desaparecen */
+  .transition-opacity {
+    transition: opacity var(--transition-normal) var(--transition-timing);
+  }
+
+  .transition-transform {
+    transition: transform var(--transition-normal) var(--transition-timing);
+  }
+
+  .transition-all {
+    transition: all var(--transition-normal) var(--transition-timing);
+  }

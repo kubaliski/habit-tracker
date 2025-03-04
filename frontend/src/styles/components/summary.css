@@ -1,0 +1,62 @@
+/* summary.css - Estilos para el componente de resumen diario */
+
+.daily-summary {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .summary-date {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .summary-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .summary-stat {
+    text-align: center;
+    padding: var(--spacing-3);
+    border-radius: var(--border-radius-md);
+    background-color: var(--color-gray-100);
+    transition: transform var(--transition-fast) var(--transition-timing);
+  }
+
+  .summary-stat:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .summary-stat-value {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-1);
+  }
+
+  .summary-stat-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+  }
+
+  .summary-progress {
+    flex-grow: 1;
+    margin-top: var(--spacing-4);
+  }
+
+  /* Media queries específicas para este componente */
+  @media (max-width: 768px) {
+    .summary-stats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .summary-stats {
+      grid-template-columns: 1fr;
+    }
+  }

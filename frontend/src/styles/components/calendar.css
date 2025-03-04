@@ -1,0 +1,108 @@
+/* calendar.css - Estilos para el componente de calendario */
+
+.calendar-panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-4);
+  }
+
+  .calendar-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .calendar-nav {
+    display: flex;
+    gap: var(--spacing-2);
+  }
+
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--spacing-2);
+    flex-grow: 1;
+  }
+
+  .calendar-day-name {
+    text-align: center;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-500);
+    padding-bottom: var(--spacing-2);
+  }
+
+  .calendar-day {
+    aspect-ratio: 1 / 1;
+    border-radius: var(--border-radius-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-1);
+    font-size: var(--font-size-sm);
+    position: relative;
+    cursor: pointer;
+    transition: background-color var(--transition-fast) var(--transition-timing);
+  }
+
+  .calendar-day:hover {
+    background-color: var(--color-gray-100);
+  }
+
+  .calendar-day-number {
+    margin-bottom: var(--spacing-1);
+  }
+
+  .calendar-day-indicator {
+    width: 6px;
+    height: 6px;
+    border-radius: var(--border-radius-full);
+    margin: 1px;
+  }
+
+  .calendar-day-indicators {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 24px;
+  }
+
+  .calendar-current-day {
+    background-color: var(--color-primary-light);
+    color: var(--color-white);
+  }
+
+  .calendar-non-month-day {
+    opacity: 0.4;
+  }
+
+  .habit-indicator {
+    background-color: var(--color-secondary);
+  }
+
+  .caffeine-indicator {
+    background-color: var(--color-caffeine);
+  }
+
+  .mood-indicator {
+    background-color: var(--color-accent);
+  }
+
+  /* Media queries específicas para este componente */
+  @media (max-width: 480px) {
+    .calendar-day-name,
+    .calendar-day {
+      font-size: var(--font-size-xs);
+    }
+
+    .calendar-day-indicators {
+      max-width: 18px;
+    }
+  }

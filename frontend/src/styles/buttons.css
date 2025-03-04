@@ -1,0 +1,242 @@
+/* buttons.css - Estilos para todos los botones de la aplicación */
+
+/* Base para todos los botones */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-2) var(--spacing-4);
+    border-radius: var(--border-radius-md);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-base);
+    line-height: 1.5;
+    transition: all var(--transition-fast) var(--transition-timing);
+    cursor: pointer;
+    white-space: nowrap;
+    user-select: none;
+    border: 1px solid transparent;
+  }
+
+  .btn:disabled,
+  .btn.disabled {
+    opacity: 0.65;
+    pointer-events: none;
+  }
+
+  .btn svg {
+    width: 1.25em;
+    height: 1.25em;
+    margin-right: var(--spacing-2);
+  }
+
+  /* Estilos del botón primario */
+  .btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+  }
+
+  .btn-primary:hover,
+  .btn-primary:focus {
+    background-color: var(--color-primary-dark);
+    box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.25);
+  }
+
+  .btn-primary:active {
+    background-color: var(--color-primary-dark);
+    transform: translateY(1px);
+  }
+
+  /* Estilos del botón secundario */
+  .btn-secondary {
+    background-color: var(--color-secondary);
+    color: var(--color-white);
+  }
+
+  .btn-secondary:hover,
+  .btn-secondary:focus {
+    background-color: var(--color-secondary-dark);
+    box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.25);
+  }
+
+  .btn-secondary:active {
+    background-color: var(--color-secondary-dark);
+    transform: translateY(1px);
+  }
+
+  /* Estilos del botón de acento */
+  .btn-accent {
+    background-color: var(--color-accent);
+    color: var(--color-white);
+  }
+
+  .btn-accent:hover,
+  .btn-accent:focus {
+    background-color: var(--color-accent-dark);
+    box-shadow: 0 0 0 0.2rem rgba(245, 158, 11, 0.25);
+  }
+
+  .btn-accent:active {
+    background-color: var(--color-accent-dark);
+    transform: translateY(1px);
+  }
+
+  /* Botón de contorno (outline) */
+  .btn-outline {
+    background-color: transparent;
+    border-color: currentColor;
+  }
+
+  .btn-outline-primary {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+
+  .btn-outline-primary:hover,
+  .btn-outline-primary:focus {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+  }
+
+  .btn-outline-secondary {
+    color: var(--color-secondary);
+    border-color: var(--color-secondary);
+  }
+
+  .btn-outline-secondary:hover,
+  .btn-outline-secondary:focus {
+    background-color: var(--color-secondary);
+    color: var(--color-white);
+  }
+
+  .btn-outline-accent {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .btn-outline-accent:hover,
+  .btn-outline-accent:focus {
+    background-color: var(--color-accent);
+    color: var(--color-white);
+  }
+
+  /* Botón de texto (sin fondo) */
+  .btn-text {
+    background-color: transparent;
+    padding: var(--spacing-1) var(--spacing-2);
+    color: var(--color-primary);
+  }
+
+  .btn-text:hover,
+  .btn-text:focus {
+    color: var(--color-primary-dark);
+    background-color: var(--color-gray-100);
+  }
+
+  /* Botón de icono (solo icono) */
+  .btn-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border-radius: var(--border-radius-full);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-icon svg {
+    margin: 0;
+  }
+
+  .btn-icon.btn-sm {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .btn-icon.btn-lg {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  /* Tamaños de botones */
+  .btn-sm {
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-1) var(--spacing-3);
+  }
+
+  .btn-lg {
+    font-size: var(--font-size-lg);
+    padding: var(--spacing-3) var(--spacing-6);
+  }
+
+  /* Botones de estado */
+  .btn-success {
+    background-color: var(--color-success);
+    color: var(--color-white);
+  }
+
+  .btn-success:hover,
+  .btn-success:focus {
+    background-color: var(--color-secondary-dark);
+  }
+
+  .btn-warning {
+    background-color: var(--color-warning);
+    color: var(--color-white);
+  }
+
+  .btn-warning:hover,
+  .btn-warning:focus {
+    background-color: var(--color-accent-dark);
+  }
+
+  .btn-error {
+    background-color: var(--color-error);
+    color: var(--color-white);
+  }
+
+  .btn-error:hover,
+  .btn-error:focus {
+    background-color: #dc2626; /* Rojo más oscuro */
+  }
+
+  .btn-info {
+    background-color: var(--color-info);
+    color: var(--color-white);
+  }
+
+  .btn-info:hover,
+  .btn-info:focus {
+    background-color: #2563eb; /* Azul más oscuro */
+  }
+
+  /* Grupo de botones */
+  .btn-group {
+    display: inline-flex;
+  }
+
+  .btn-group .btn:not(:first-child) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  .btn-group .btn:not(:last-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: 1px solid rgba(0, 0, 0, 0.15);
+  }
+
+  /* Botón de bloque (ocupa todo el ancho) */
+  .btn-block {
+    display: flex;
+    width: 100%;
+  }
+
+  /* Espaciado entre botones cuando están uno al lado del otro */
+  .btn + .btn {
+    margin-left: var(--spacing-2);
+  }
+
+  .btn-block + .btn-block {
+    margin-top: var(--spacing-2);
+    margin-left: 0;
+  }

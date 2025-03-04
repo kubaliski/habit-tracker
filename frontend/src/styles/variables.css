@@ -1,0 +1,135 @@
+:root {
+    /* Paleta de Colores */
+    --color-primary: #4F46E5;         /* Índigo - Color principal */
+    --color-primary-light: #818CF8;   /* Variante clara de índigo */
+    --color-primary-dark: #3730A3;    /* Variante oscura de índigo */
+
+    --color-secondary: #10B981;       /* Esmeralda - Color secundario */
+    --color-secondary-light: #34D399; /* Variante clara de esmeralda */
+    --color-secondary-dark: #059669;  /* Variante oscura de esmeralda */
+
+    --color-accent: #F59E0B;          /* Ámbar - Color de acento */
+    --color-accent-light: #FBBF24;    /* Variante clara de ámbar */
+    --color-accent-dark: #D97706;     /* Variante oscura de ámbar */
+
+    --color-mood-best: #10B981;       /* Verde para el mejor estado de ánimo */
+    --color-mood-good: #60A5FA;       /* Azul para buen estado de ánimo */
+    --color-mood-neutral: #9CA3AF;    /* Gris para estado de ánimo neutral */
+    --color-mood-bad: #F87171;        /* Rojo claro para mal estado de ánimo */
+    --color-mood-worst: #EF4444;      /* Rojo para el peor estado de ánimo */
+
+    --color-caffeine: #7C3AED;        /* Violeta para cafeína */
+
+    /* Neutros */
+    --color-black: #111827;           /* Negro personalizado */
+    --color-white: #FFFFFF;           /* Blanco */
+    --color-gray-50: #F9FAFB;         /* Gris casi blanco */
+    --color-gray-100: #F3F4F6;        /* Gris muy claro */
+    --color-gray-200: #E5E7EB;        /* Gris claro */
+    --color-gray-300: #D1D5DB;        /* Gris */
+    --color-gray-400: #9CA3AF;        /* Gris medio */
+    --color-gray-500: #6B7280;        /* Gris medio-oscuro */
+    --color-gray-600: #4B5563;        /* Gris oscuro */
+    --color-gray-700: #374151;        /* Gris muy oscuro */
+    --color-gray-800: #1F2937;        /* Gris casi negro */
+    --color-gray-900: #111827;        /* Gris negro */
+
+    /* Estados y Feedback */
+    --color-success: #10B981;         /* Verde - Éxito */
+    --color-warning: #F59E0B;         /* Ámbar - Advertencia */
+    --color-error: #EF4444;           /* Rojo - Error */
+    --color-info: #3B82F6;            /* Azul - Información */
+
+    /* Tipografía */
+    --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    --font-family-mono: 'SF Mono', 'Roboto Mono', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+
+    /* Tamaños de fuente */
+    --font-size-xs: 0.75rem;   /* 12px */
+    --font-size-sm: 0.875rem;  /* 14px */
+    --font-size-base: 1rem;    /* 16px */
+    --font-size-lg: 1.125rem;  /* 18px */
+    --font-size-xl: 1.25rem;   /* 20px */
+    --font-size-2xl: 1.5rem;   /* 24px */
+    --font-size-3xl: 1.875rem; /* 30px */
+    --font-size-4xl: 2.25rem;  /* 36px */
+
+    /* Grosor de fuente */
+    --font-weight-light: 300;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    /* Espaciados */
+    --spacing-0: 0;
+    --spacing-0-5: 0.125rem; /* 2px */
+    --spacing-1: 0.25rem;    /* 4px */
+    --spacing-2: 0.5rem;     /* 8px */
+    --spacing-3: 0.75rem;    /* 12px */
+    --spacing-4: 1rem;       /* 16px */
+    --spacing-5: 1.25rem;    /* 20px */
+    --spacing-6: 1.5rem;     /* 24px */
+    --spacing-8: 2rem;       /* 32px */
+    --spacing-10: 2.5rem;    /* 40px */
+    --spacing-12: 3rem;      /* 48px */
+    --spacing-16: 4rem;      /* 64px */
+    --spacing-20: 5rem;      /* 80px */
+    --spacing-24: 6rem;      /* 96px */
+
+    /* Bordes */
+    --border-radius-sm: 0.125rem;  /* 2px */
+    --border-radius-md: 0.375rem;  /* 6px */
+    --border-radius-lg: 0.5rem;    /* 8px */
+    --border-radius-xl: 0.75rem;   /* 12px */
+    --border-radius-2xl: 1rem;     /* 16px */
+    --border-radius-full: 9999px;
+
+    /* Sombras */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+    /* Transiciones */
+    --transition-fast: 150ms;
+    --transition-normal: 300ms;
+    --transition-slow: 500ms;
+    --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Z-index */
+    --z-index-0: 0;
+    --z-index-10: 10;
+    --z-index-20: 20;
+    --z-index-30: 30;
+    --z-index-40: 40;
+    --z-index-50: 50;
+    --z-index-auto: auto;
+
+    /* Contenedor */
+    --container-padding: 0.75rem; /* Reducido de 1rem para dejar menos espacio en blanco a los lados */
+    --container-max-width: 1600px; /* Aumentado de 1200px para ocupar más ancho */
+
+    /* Bento Grid */
+    --bento-gap: 0.75rem; /* Reducido de 1rem para dejar menos espacio entre tarjetas */
+    --bento-card-padding: 1.25rem; /* Reducido de 1.5rem para aprovechar mejor el espacio interno */
+    --bento-border-radius: var(--border-radius-lg);
+    --bento-card-bg: var(--color-white);
+    --bento-card-shadow: var(--shadow-md);
+  }
+
+  /* Media queries para ajustar los tamaños en dispositivos */
+  @media (max-width: 640px) {
+    :root {
+      --container-padding: 0.5rem; /* Reducido aún más para móviles */
+      --bento-gap: 0.5rem;
+      --bento-card-padding: 0.75rem;
+    }
+  }
+
+  /* Media query para pantallas muy grandes */
+  @media (min-width: 1921px) {
+    :root {
+      --container-max-width: 1800px; /* Aún más ancho para pantallas muy grandes */
+    }
+  }

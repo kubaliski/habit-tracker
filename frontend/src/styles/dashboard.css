@@ -1,0 +1,820 @@
+/* dashboard.css - Estilos específicos para los componentes del dashboard */
+
+/* Componente de resumen diario */
+.daily-summary {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .summary-date {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .summary-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .summary-stat {
+    text-align: center;
+    padding: var(--spacing-3);
+    border-radius: var(--border-radius-md);
+    background-color: var(--color-gray-100);
+    transition: transform var(--transition-fast) var(--transition-timing);
+  }
+
+  .summary-stat:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .summary-stat-value {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-1);
+  }
+
+  .summary-stat-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+  }
+
+  .summary-progress {
+    flex-grow: 1;
+    margin-top: var(--spacing-4);
+  }
+
+  /* Componente de hábitos */
+  .habits-panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .habits-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-4);
+  }
+
+  .habits-date-selector {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+  }
+
+  .habits-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+    flex-grow: 1;
+    overflow-y: auto;
+  }
+
+  .habit-item {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-3);
+    border-radius: var(--border-radius-md);
+    background-color: var(--color-gray-100);
+    transition: all var(--transition-fast) var(--transition-timing);
+  }
+
+  .habit-item:hover {
+    background-color: var(--color-gray-200);
+    transform: translateX(3px);
+  }
+
+  .habit-check {
+    margin-right: var(--spacing-3);
+  }
+
+  .habit-info {
+    flex-grow: 1;
+  }
+
+  .habit-name {
+    font-weight: var(--font-weight-medium);
+    margin-bottom: var(--spacing-1);
+  }
+
+  .habit-streak {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+    display: flex;
+    align-items: center;
+  }
+
+  .habit-streak-icon {
+    color: var(--color-accent);
+    margin-right: var(--spacing-1);
+  }
+
+  .habit-actions {
+    display: flex;
+    gap: var(--spacing-2);
+  }
+
+  /* Estados de hábitos */
+  .habit-completed {
+    background-color: rgba(16, 185, 129, 0.1);
+    border-left: 3px solid var(--color-success);
+  }
+
+  .habit-incomplete {
+    opacity: 0.8;
+  }
+
+  .add-habit-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: var(--spacing-3);
+    padding: var(--spacing-3);
+    border: 2px dashed var(--color-gray-300);
+    border-radius: var(--border-radius-md);
+    color: var(--color-gray-500);
+    font-weight: var(--font-weight-medium);
+    transition: all var(--transition-fast) var(--transition-timing);
+  }
+
+  .add-habit-button:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background-color: rgba(79, 70, 229, 0.05);
+  }
+
+  .add-habit-button svg {
+    margin-right: var(--spacing-2);
+  }
+
+  /* Componente de consumo de cafeína */
+  .caffeine-panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .caffeine-today {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--spacing-4);
+  }
+
+  .caffeine-icon {
+    width: 48px;
+    height: 48px;
+    background-color: var(--color-caffeine);
+    border-radius: var(--border-radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: var(--spacing-4);
+    color: var(--color-white);
+  }
+
+  .caffeine-info {
+    flex-grow: 1;
+  }
+
+  .caffeine-total {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .caffeine-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+  }
+
+  .caffeine-limit {
+    height: 6px;
+    background-color: var(--color-gray-200);
+    border-radius: var(--border-radius-full);
+    margin-top: var(--spacing-2);
+    overflow: hidden;
+  }
+
+  .caffeine-limit-bar {
+    height: 100%;
+    background-color: var(--color-caffeine);
+    border-radius: var(--border-radius-full);
+    transition: width var(--transition-normal) var(--transition-timing);
+  }
+
+  .caffeine-limit-bar.warning {
+    background-color: var(--color-warning);
+  }
+
+  .caffeine-limit-bar.danger {
+    background-color: var(--color-error);
+  }
+
+  .caffeine-chart-container {
+    height: 180px;
+    margin: var(--spacing-4) 0;
+    flex-grow: 1;
+  }
+
+  .caffeine-log {
+    margin-top: var(--spacing-3);
+    max-height: 150px;
+    overflow-y: auto;
+  }
+
+  .caffeine-log-title {
+    font-weight: var(--font-weight-medium);
+    margin-bottom: var(--spacing-2);
+    color: var(--color-gray-700);
+  }
+
+  .caffeine-log-item {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-2) 0;
+    border-bottom: 1px solid var(--color-gray-200);
+  }
+
+  .caffeine-log-time {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+    width: 80px;
+  }
+
+  .caffeine-log-beverage {
+    flex-grow: 1;
+  }
+
+  .caffeine-log-amount {
+    font-weight: var(--font-weight-medium);
+    color: var(--color-caffeine);
+  }
+
+  .caffeine-add-button {
+    margin-top: var(--spacing-3);
+  }
+
+  /* Componente de estado de ánimo */
+  .mood-panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mood-today {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: var(--spacing-5);
+    padding: var(--spacing-4);
+    background-color: var(--color-gray-50);
+    border-radius: var(--border-radius-lg);
+  }
+
+  .mood-emoji {
+    font-size: 48px;
+    margin-bottom: var(--spacing-2);
+  }
+
+  .mood-value {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .mood-description {
+    color: var(--color-gray-600);
+    margin-top: var(--spacing-1);
+    text-align: center;
+  }
+
+  .mood-chart-container {
+    height: 150px;
+    margin-bottom: var(--spacing-4);
+    flex-grow: 1;
+  }
+
+  .mood-factors {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-3);
+  }
+
+  .mood-factor {
+    text-align: center;
+    padding: var(--spacing-2);
+    background-color: var(--color-gray-100);
+    border-radius: var(--border-radius-md);
+  }
+
+  .mood-factor-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+    margin-bottom: var(--spacing-1);
+  }
+
+  .mood-factor-value {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .mood-buttons {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-2);
+    margin-top: var(--spacing-4);
+  }
+
+  .mood-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--spacing-2);
+    border-radius: var(--border-radius-md);
+    background-color: var(--color-gray-100);
+    cursor: pointer;
+    transition: all var(--transition-fast) var(--transition-timing);
+  }
+
+  .mood-button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .mood-button.active {
+    background-color: rgba(79, 70, 229, 0.1);
+    border: 1px solid var(--color-primary);
+  }
+
+  .mood-button-emoji {
+    font-size: 24px;
+    margin-bottom: var(--spacing-1);
+  }
+
+  .mood-button-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-700);
+  }
+
+  /* Componente de calendario */
+  .calendar-panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-4);
+  }
+
+  .calendar-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .calendar-nav {
+    display: flex;
+    gap: var(--spacing-2);
+  }
+
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--spacing-2);
+    flex-grow: 1;
+  }
+
+  .calendar-day-name {
+    text-align: center;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-500);
+    padding-bottom: var(--spacing-2);
+  }
+
+  .calendar-day {
+    aspect-ratio: 1 / 1;
+    border-radius: var(--border-radius-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-1);
+    font-size: var(--font-size-sm);
+    position: relative;
+    cursor: pointer;
+    transition: background-color var(--transition-fast) var(--transition-timing);
+  }
+
+  .calendar-day:hover {
+    background-color: var(--color-gray-100);
+  }
+
+  .calendar-day-number {
+    margin-bottom: var(--spacing-1);
+  }
+
+  .calendar-day-indicator {
+    width: 6px;
+    height: 6px;
+    border-radius: var(--border-radius-full);
+    margin: 1px;
+  }
+
+  .calendar-day-indicators {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 24px;
+  }
+
+  .calendar-current-day {
+    background-color: var(--color-primary-light);
+    color: var(--color-white);
+  }
+
+  .calendar-non-month-day {
+    opacity: 0.4;
+  }
+
+  .habit-indicator {
+    background-color: var(--color-secondary);
+  }
+
+  .caffeine-indicator {
+    background-color: var(--color-caffeine);
+  }
+
+  .mood-indicator {
+    background-color: var(--color-accent);
+  }
+
+  /* Componente de estadísticas/correlación */
+  .stats-panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stats-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--color-gray-200);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .stats-tab {
+    padding: var(--spacing-2) var(--spacing-4);
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all var(--transition-fast) var(--transition-timing);
+  }
+
+  .stats-tab:hover {
+    color: var(--color-primary);
+  }
+
+  .stats-tab.active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-4);
+  }
+
+  .stats-item {
+    padding: var(--spacing-3);
+    border-radius: var(--border-radius-md);
+    background-color: var(--color-gray-100);
+  }
+
+  .stats-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+    margin-bottom: var(--spacing-2);
+  }
+
+  .stats-value {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .stats-trend {
+    display: flex;
+    align-items: center;
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-1);
+  }
+
+  .stats-trend.up {
+    color: var(--color-success);
+  }
+
+  .stats-trend.down {
+    color: var(--color-error);
+  }
+
+  .stats-trend.neutral {
+    color: var(--color-gray-500);
+  }
+
+  .stats-trend-icon {
+    margin-right: var(--spacing-1);
+  }
+
+  .correlation-chart {
+    margin-top: var(--spacing-5);
+    height: 200px;
+    flex-grow: 1;
+  }
+
+  .correlation-legend {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-4);
+    margin-top: var(--spacing-4);
+  }
+
+  .correlation-legend-item {
+    display: flex;
+    align-items: center;
+    font-size: var(--font-size-sm);
+  }
+
+  .correlation-legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: var(--border-radius-sm);
+    margin-right: var(--spacing-2);
+  }
+
+  /* Componente de progreso general */
+  .progress-panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .progress-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-6);
+  }
+
+  .progress-metric {
+    text-align: center;
+    padding: var(--spacing-3);
+    background-color: var(--color-gray-100);
+    border-radius: var(--border-radius-md);
+    transition: transform var(--transition-fast) var(--transition-timing);
+  }
+
+  .progress-metric:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .progress-metric-value {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-1);
+  }
+
+  .progress-metric-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+  }
+
+  .progress-chart-container {
+    height: 200px;
+    flex-grow: 1;
+  }
+
+  .progress-periods {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-2);
+    margin-top: var(--spacing-4);
+  }
+
+  .progress-period {
+    padding: var(--spacing-1) var(--spacing-3);
+    border-radius: var(--border-radius-full);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast) var(--transition-timing);
+  }
+
+  .progress-period:hover {
+    background-color: var(--color-gray-100);
+  }
+
+  .progress-period.active {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+  }
+
+  /* Componente vacío/añadir nuevo */
+  .add-new-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-gray-50);
+    border: 2px dashed var(--color-gray-300);
+    border-radius: var(--bento-border-radius);
+    padding: var(--spacing-6);
+    cursor: pointer;
+    transition: all var(--transition-normal) var(--transition-timing);
+  }
+
+  .add-new-card:hover {
+    border-color: var(--color-primary);
+    background-color: rgba(79, 70, 229, 0.05);
+  }
+
+  .add-new-card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--border-radius-full);
+    background-color: var(--color-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-4);
+    box-shadow: var(--shadow-md);
+  }
+
+  .add-new-card-text {
+    font-weight: var(--font-weight-medium);
+    color: var(--color-gray-600);
+    text-align: center;
+  }
+
+  /* Widget de notas rápidas */
+  .notes-widget {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .notes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-3);
+  }
+
+  .notes-title {
+    font-weight: var(--font-weight-medium);
+  }
+
+  .notes-actions {
+    display: flex;
+    gap: var(--spacing-2);
+  }
+
+  .notes-content {
+    flex-grow: 1;
+    padding: var(--spacing-3);
+    background-color: var(--color-gray-50);
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--color-gray-200);
+    resize: none;
+    font-family: var(--font-family-sans);
+    font-size: var(--font-size-sm);
+    line-height: 1.6;
+  }
+
+  .notes-content:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+  }
+
+  /* Widget de recordatorios */
+  .reminders-widget {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .reminders-list {
+    flex-grow: 1;
+    overflow-y: auto;
+  }
+
+  .reminder-item {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-2) 0;
+    border-bottom: 1px solid var(--color-gray-200);
+  }
+
+  .reminder-checkbox {
+    margin-right: var(--spacing-2);
+  }
+
+  .reminder-content {
+    flex-grow: 1;
+  }
+
+  .reminder-title {
+    font-weight: var(--font-weight-medium);
+  }
+
+  .reminder-time {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+  }
+
+  .reminder-actions {
+    display: flex;
+    gap: var(--spacing-1);
+  }
+
+  .reminder-add {
+    display: flex;
+    margin-top: var(--spacing-3);
+    padding: var(--spacing-2);
+    border-top: 1px solid var(--color-gray-200);
+  }
+
+  .reminder-input {
+    flex-grow: 1;
+    padding: var(--spacing-1) var(--spacing-2);
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-sm);
+  }
+
+  .reminder-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+  }
+
+  .reminder-add-button {
+    margin-left: var(--spacing-2);
+  }
+
+  /* Media queries para responsive */
+  @media (max-width: 768px) {
+    .summary-stats {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .mood-factors {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .progress-metrics {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .summary-stats {
+      grid-template-columns: 1fr;
+    }
+
+    .mood-factors {
+      grid-template-columns: 1fr;
+    }
+
+    .calendar-day-name,
+    .calendar-day {
+      font-size: var(--font-size-xs);
+    }
+
+    .calendar-day-indicators {
+      max-width: 18px;
+    }
+
+    .caffeine-today {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .caffeine-icon {
+      margin-bottom: var(--spacing-2);
+      margin-right: 0;
+    }
+  }

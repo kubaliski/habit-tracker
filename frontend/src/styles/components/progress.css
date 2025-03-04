@@ -1,0 +1,74 @@
+/* progress.css - Estilos para el componente de progreso general */
+
+.progress-panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .progress-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-6);
+  }
+
+  .progress-metric {
+    text-align: center;
+    padding: var(--spacing-3);
+    background-color: var(--color-gray-100);
+    border-radius: var(--border-radius-md);
+    transition: transform var(--transition-fast) var(--transition-timing);
+  }
+
+  .progress-metric:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .progress-metric-value {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-1);
+  }
+
+  .progress-metric-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+  }
+
+  .progress-chart-container {
+    height: 200px;
+    flex-grow: 1;
+  }
+
+  .progress-periods {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-2);
+    margin-top: var(--spacing-4);
+  }
+
+  .progress-period {
+    padding: var(--spacing-1) var(--spacing-3);
+    border-radius: var(--border-radius-full);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast) var(--transition-timing);
+  }
+
+  .progress-period:hover {
+    background-color: var(--color-gray-100);
+  }
+
+  .progress-period.active {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+  }
+
+  /* Media queries específicas para este componente */
+  @media (max-width: 768px) {
+    .progress-metrics {
+      grid-template-columns: 1fr;
+    }
+  }

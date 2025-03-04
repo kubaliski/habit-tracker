@@ -1,0 +1,191 @@
+/* responsive.css - Media queries generales para todo el dashboard */
+
+/* Breakpoint para tablets (768px) */
+@media (max-width: 768px) {
+    /* Ajustes de layout general */
+    .dashboard-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-4);
+    }
+
+    .dashboard-wide-card {
+      grid-column: span 2;
+    }
+
+    /* Ajustes de fuentes para mejorar legibilidad */
+    body {
+      font-size: 15px;
+    }
+
+    /* Ajustes de sidebar/navegación */
+    .sidebar {
+      width: 240px;
+    }
+
+    .sidebar-collapsed {
+      width: 60px;
+    }
+
+    /* Ajustes de espaciado general */
+    .container {
+      padding: var(--spacing-4);
+    }
+  }
+
+  /* Breakpoint para móviles grandes (600px) */
+  @media (max-width: 600px) {
+    /* Ajustes de layout */
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .dashboard-wide-card {
+      grid-column: span 1;
+    }
+
+    /* Ajustes de navegación */
+    .navbar {
+      padding: var(--spacing-2) var(--spacing-3);
+    }
+
+    .sidebar {
+      width: 100%;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      height: auto;
+      z-index: var(--z-index-30);
+      box-shadow: var(--shadow-lg);
+      transform: translateY(100%);
+      transition: transform var(--transition-normal) var(--transition-timing);
+    }
+
+    .sidebar.open {
+      transform: translateY(0);
+    }
+
+    .sidebar-nav {
+      flex-direction: row;
+      justify-content: space-around;
+      padding: var(--spacing-2);
+    }
+
+    /* Ajustes de encabezados */
+    .page-title {
+      font-size: var(--font-size-xl);
+    }
+  }
+
+  /* Breakpoint para móviles pequeños (480px) */
+  @media (max-width: 480px) {
+    /* Ajustes específicos para móviles pequeños */
+    body {
+      font-size: 14px;
+    }
+
+    /* Ajuste de espaciado */
+    .container {
+      padding: var(--spacing-3);
+    }
+
+    /* Ajustes visuales para mejorar espacio útil */
+    .card {
+      padding: var(--spacing-3);
+    }
+
+    /* Botones más grandes para mejor experiencia táctil */
+    .btn {
+      padding: var(--spacing-2) var(--spacing-3);
+      min-height: 44px; /* Mínimo recomendado para elementos táctiles */
+    }
+
+    /* Reducir espaciado entre elementos */
+    .dashboard-grid {
+      gap: var(--spacing-3);
+    }
+
+    /* Ajustes de dropdown/menús */
+    .dropdown-menu {
+      width: 100%;
+      left: 0;
+      right: 0;
+    }
+  }
+
+  /* Orientación en dispositivos móviles */
+  @media (max-width: 768px) and (orientation: landscape) {
+    /* Ajustes específicos para orientación horizontal en móviles */
+    .dashboard-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .sidebar {
+      height: 100%;
+      bottom: auto;
+      width: 60px;
+    }
+
+    .sidebar-nav {
+      flex-direction: column;
+    }
+  }
+
+  /* Soporte para pantallas de alta densidad */
+  @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    /* Ajustes para pantallas retina/alta densidad */
+    .logo-img {
+      transform: scale(0.8);
+    }
+  }
+
+  /* Soporte para preferencias de usuario - Modo de reducción de movimiento */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      transition-duration: 0.001ms !important;
+      animation-duration: 0.001ms !important;
+    }
+  }
+
+  /* Soporte para pantallas grandes */
+  @media (min-width: 1440px) {
+    /* Ajustes para monitores grandes */
+    .dashboard-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+  }
+
+  /* Ajustes de impresión */
+  @media print {
+    /* Estilos para versión impresa del dashboard */
+    .sidebar,
+    .navbar-actions,
+    .btn:not(.btn-print),
+    .add-new-card {
+      display: none !important;
+    }
+
+    body {
+      background-color: white;
+    }
+
+    .card {
+      break-inside: avoid;
+      border: 1px solid #ddd;
+      box-shadow: none;
+      margin-bottom: 1cm;
+    }
+
+    .dashboard-grid {
+      display: block;
+    }
+
+    /* Asegurar que los gráficos se impriman correctamente */
+    .chart-container {
+      page-break-inside: avoid;
+    }
+  }

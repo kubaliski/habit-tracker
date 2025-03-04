@@ -1,0 +1,109 @@
+/* stats.css - Estilos para el componente de estadísticas y correlación */
+
+.stats-panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stats-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--color-gray-200);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .stats-tab {
+    padding: var(--spacing-2) var(--spacing-4);
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all var(--transition-fast) var(--transition-timing);
+  }
+
+  .stats-tab:hover {
+    color: var(--color-primary);
+  }
+
+  .stats-tab.active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-4);
+  }
+
+  .stats-item {
+    padding: var(--spacing-3);
+    border-radius: var(--border-radius-md);
+    background-color: var(--color-gray-100);
+  }
+
+  .stats-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+    margin-bottom: var(--spacing-2);
+  }
+
+  .stats-value {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .stats-trend {
+    display: flex;
+    align-items: center;
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-1);
+  }
+
+  .stats-trend.up {
+    color: var(--color-success);
+  }
+
+  .stats-trend.down {
+    color: var(--color-error);
+  }
+
+  .stats-trend.neutral {
+    color: var(--color-gray-500);
+  }
+
+  .stats-trend-icon {
+    margin-right: var(--spacing-1);
+  }
+
+  .correlation-chart {
+    margin-top: var(--spacing-5);
+    height: 200px;
+    flex-grow: 1;
+  }
+
+  .correlation-legend {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-4);
+    margin-top: var(--spacing-4);
+  }
+
+  .correlation-legend-item {
+    display: flex;
+    align-items: center;
+    font-size: var(--font-size-sm);
+  }
+
+  .correlation-legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: var(--border-radius-sm);
+    margin-right: var(--spacing-2);
+  }
+
+  /* Media queries específicas para este componente */
+  @media (max-width: 768px) {
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }

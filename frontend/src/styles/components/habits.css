@@ -1,0 +1,105 @@
+/* habits.css - Estilos para el componente de hábitos */
+
+.habits-panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .habits-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-4);
+  }
+
+  .habits-date-selector {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+  }
+
+  .habits-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+    flex-grow: 1;
+    overflow-y: auto;
+  }
+
+  .habit-item {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-3);
+    border-radius: var(--border-radius-md);
+    background-color: var(--color-gray-100);
+    transition: all var(--transition-fast) var(--transition-timing);
+  }
+
+  .habit-item:hover {
+    background-color: var(--color-gray-200);
+    transform: translateX(3px);
+  }
+
+  .habit-check {
+    margin-right: var(--spacing-3);
+  }
+
+  .habit-info {
+    flex-grow: 1;
+  }
+
+  .habit-name {
+    font-weight: var(--font-weight-medium);
+    margin-bottom: var(--spacing-1);
+  }
+
+  .habit-streak {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+    display: flex;
+    align-items: center;
+  }
+
+  .habit-streak-icon {
+    color: var(--color-accent);
+    margin-right: var(--spacing-1);
+  }
+
+  .habit-actions {
+    display: flex;
+    gap: var(--spacing-2);
+  }
+
+  /* Estados de hábitos */
+  .habit-completed {
+    background-color: rgba(16, 185, 129, 0.1);
+    border-left: 3px solid var(--color-success);
+  }
+
+  .habit-incomplete {
+    opacity: 0.8;
+  }
+
+  .add-habit-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: var(--spacing-3);
+    padding: var(--spacing-3);
+    border: 2px dashed var(--color-gray-300);
+    border-radius: var(--border-radius-md);
+    color: var(--color-gray-500);
+    font-weight: var(--font-weight-medium);
+    transition: all var(--transition-fast) var(--transition-timing);
+  }
+
+  .add-habit-button:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background-color: rgba(79, 70, 229, 0.05);
+  }
+
+  .add-habit-button svg {
+    margin-right: var(--spacing-2);
+  }

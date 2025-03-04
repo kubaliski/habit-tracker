@@ -1,0 +1,39 @@
+/* cards.css - Estilos para los componentes de tarjetas y añadir nuevos */
+
+.add-new-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-gray-50);
+    border: 2px dashed var(--color-gray-300);
+    border-radius: var(--bento-border-radius);
+    padding: var(--spacing-6);
+    cursor: pointer;
+    transition: all var(--transition-normal) var(--transition-timing);
+  }
+
+  .add-new-card:hover {
+    border-color: var(--color-primary);
+    background-color: rgba(79, 70, 229, 0.05);
+  }
+
+  .add-new-card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--border-radius-full);
+    background-color: var(--color-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-4);
+    box-shadow: var(--shadow-md);
+  }
+
+  .add-new-card-text {
+    font-weight: var(--font-weight-medium);
+    color: var(--color-gray-600);
+    text-align: center;
+  }
