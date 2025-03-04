@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { CreateMoodEntry, UpdateMoodEntry } from "../../../wailsjs/go/api/MoodController";
+import { CreateMoodEntry, UpdateMoodEntry } from "@api/MoodController";
 
 function MoodPanel({ moodEntries, date }) {
   const [isAddingMood, setIsAddingMood] = useState(false);

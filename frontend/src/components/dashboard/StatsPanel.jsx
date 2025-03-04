@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { GetHabitStats } from "../../../wailsjs/go/api/StatsController";
-import { GetMoodStats } from "../../../wailsjs/go/api/StatsController";
-import { GetCaffeineStats } from "../../../wailsjs/go/api/StatsController";
-import { GetCorrelationStats } from "../../../wailsjs/go/api/StatsController";
+import { GetHabitStats } from "@api/StatsController";
+import { GetMoodStats } from "@api/StatsController";
+import { GetCaffeineStats } from "@api/StatsController";
+import { GetCorrelationStats } from "@api/StatsController";
 
 function StatsPanel({ habits, moodEntries, caffeineIntakes }) {
   const [activeTab, setActiveTab] = useState('general');

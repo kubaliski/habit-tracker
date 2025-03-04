@@ -1,18 +1,12 @@
 import { useState, useEffect } from 'react';
 import { GetAppInfo } from "../wailsjs/go/main/App";
-import { GetAllHabits } from "../wailsjs/go/api/HabitController";
-import { GetAllMoodEntries } from "../wailsjs/go/api/MoodController";
-import { GetCaffeineIntakeRange, GetDailyCaffeineTotal } from "../wailsjs/go/api/CaffeineController";
+import { GetAllHabits } from "@api/HabitController";
+import { GetAllMoodEntries } from "@api/MoodController";
+import { GetCaffeineIntakeRange, GetDailyCaffeineTotal } from "@api/CaffeineController";
 
 // Componentes del dashboard
 import Header from './components/layout/Header';
-import DailySummary from './components/dashboard/DailySummary';
-import HabitsPanel from './components/dashboard/HabitsPanel';
-import CaffeinePanel from './components/dashboard/CaffeinePanel';
-import MoodPanel from './components/dashboard/MoodPanel';
-import CalendarPanel from './components/dashboard/CalendarPanel';
-import StatsPanel from './components/dashboard/StatsPanel';
-import NotesWidget from './components/dashboard/NotesWidget';
+import {DailySummary,HabitsPanel,CaffeinePanel,MoodPanel,CalendarPanel,StatsPanel, NotesWidget} from '@components/dashboard'
 
 function App() {
   const [appInfo, setAppInfo] = useState({});
@@ -35,8 +29,25 @@ function App() {
   useEffect(() => {
     console.log("[App] caffeineData actualizado:", caffeineData);
   }, [caffeineData]);
+
   // Formatear fecha actual para consultas (YYYY-MM-DD)
   const formattedDate = date.toISOString().split('T')[0];
+
+  // Función para cargar hábitos
+  const loadHabits = async () => {
+    try {
+      console.log("[App] Cargando hábitos...");
+      setLoading(prev => ({ ...prev, habits: true }));
+
+      const result = await GetAllHabits();
+      setHabits(result || []);
+      console.log("[App] Hábitos cargados:", result);
+    } catch (err) {
+      console.error("[App] Error loading habits:", err);
+    } finally {
+      setLoading(prev => ({ ...prev, habits: false }));
+    }
+  };
 
   // Función para cargar datos de cafeína
   const loadCaffeineData = async () => {
@@ -63,6 +74,7 @@ function App() {
       setLoading(prev => ({ ...prev, caffeine: false }));
     }
   };
+
   // Cargar todos los datos iniciales
   useEffect(() => {
     // Cargar información de la aplicación
@@ -74,14 +86,8 @@ function App() {
       setLoading(prev => ({ ...prev, app: false }));
     });
 
-    // Cargar los hábitos
-    GetAllHabits().then(result => {
-      setHabits(result || []);
-      setLoading(prev => ({ ...prev, habits: false }));
-    }).catch(err => {
-      console.error("Error loading habits:", err);
-      setLoading(prev => ({ ...prev, habits: false }));
-    });
+    // Cargar los hábitos (ahora usando la función loadHabits)
+    loadHabits();
 
     // Cargar entradas de estado de ánimo (último mes)
     const monthAgo = new Date();
@@ -110,14 +116,14 @@ function App() {
   // Manejar la eliminación de ingestas de cafeína
   const handleCaffeineIntakeDeleted = async () => {
     // Recargar los datos de cafeína
-    console.log("[App] Ingesta de cafeína creada, recargando datos...");
+    console.log("[App] Ingesta de cafeína eliminada, recargando datos...");
     await loadCaffeineData();
   };
 
   // Manejar la actualización de ingestas de cafeína
   const handleCaffeineIntakeUpdated = async () => {
     // Recargar los datos de cafeína
-    console.log("[App] Ingesta de cafeína creada, recargando datos...");
+    console.log("[App] Ingesta de cafeína actualizada, recargando datos...");
     await loadCaffeineData();
   };
 
@@ -151,6 +157,7 @@ function App() {
               <HabitsPanel
                 habits={habits}
                 date={date}
+                onHabitCreated={loadHabits}
               />
             </div>
 

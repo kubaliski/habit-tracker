@@ -1,0 +1,117 @@
+/* modal.css - Estilos para el componente Modal */
+
+/* Overlay del modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(17, 24, 39, 0.6); /* Basado en --color-black con opacidad */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: var(--z-index-50);
+    backdrop-filter: blur(2px);
+    animation: modal-overlay-appear var(--transition-normal) var(--transition-timing);
+  }
+
+  @keyframes modal-overlay-appear {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Contenedor del modal */
+  .modal-container {
+    background-color: var(--color-white);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-xl);
+    animation: modal-appear var(--transition-normal) var(--transition-timing);
+    position: relative;
+  }
+
+  @keyframes modal-appear {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Tamaños del modal */
+  .modal-sm {
+    width: 90%;
+    max-width: 400px;
+  }
+
+  .modal-md {
+    width: 90%;
+    max-width: 500px;
+  }
+
+  .modal-lg {
+    width: 90%;
+    max-width: 700px;
+  }
+
+  .modal-xl {
+    width: 90%;
+    max-width: 900px;
+  }
+
+  .modal-full {
+    width: 95%;
+    max-width: 1200px;
+  }
+
+  /* Encabezado del modal */
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-4) var(--spacing-6);
+    border-bottom: 1px solid var(--color-gray-200);
+  }
+
+  .modal-title {
+    margin: 0;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-black);
+  }
+
+  /* Cuerpo del modal */
+  .modal-body {
+    padding: var(--spacing-6);
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  /* Pie del modal */
+  .modal-footer {
+    padding: var(--spacing-4) var(--spacing-6);
+    border-top: 1px solid var(--color-gray-200);
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-3);
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .modal-container {
+      width: 95%;
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+      padding: var(--spacing-3);
+    }
+  }
