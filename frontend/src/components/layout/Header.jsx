@@ -9,16 +9,16 @@ function Header({ appInfo }) {
   const formattedDate = currentDate.toLocaleDateString('es-ES', dateOptions);
 
   return (
-    <header className="header">
-      <div className="container">
+    <header className="header-container">
+      <div className="bento-card header-card">
         <div className="header-content">
           <div className="header-logo">
             <img src={logo} alt={appInfo.name || 'Habit Tracker'} />
             <h1>{appInfo.name || 'Habit Tracker'}</h1>
           </div>
 
-          <div className="header-date">
-            <span>{formattedDate}</span>
+          <div className="header-middle">
+            <span className="header-date">{formattedDate}</span>
           </div>
 
           <div className="header-nav">

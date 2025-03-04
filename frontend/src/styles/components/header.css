@@ -1,0 +1,85 @@
+/* Modificaciones para el header como card */
+.header-container {
+    width: 100%;
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: 0 var(--container-padding);
+    margin-bottom: var(--spacing-6);
+  }
+
+  .header-card {
+    margin-bottom: var(--spacing-6);
+    width: 100%;
+  }
+
+  .header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .header-middle {
+    flex-grow: 1;
+    text-align: center;
+  }
+
+  .header-date {
+    font-size: var(--font-size-md);
+    color: var(--color-gray-600);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .header-logo {
+    display: flex;
+    align-items: center;
+  }
+
+  .header-logo img {
+    height: 40px;
+    margin-right: var(--spacing-3);
+  }
+
+  .header-logo h1 {
+    font-size: var(--font-size-xl);
+    margin-bottom: 0;
+  }
+
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
+  }
+
+  /* Media queries para el header responsive */
+  @media (max-width: 768px) {
+    .header-content {
+      flex-wrap: wrap;
+      gap: var(--spacing-4);
+    }
+
+    .header-middle {
+      order: 3;
+      width: 100%;
+      text-align: left;
+      margin-top: var(--spacing-3);
+    }
+
+    .header-logo {
+      order: 1;
+    }
+
+    .header-nav {
+      order: 2;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .header-logo h1 {
+      font-size: var(--font-size-lg);
+    }
+
+    .header-nav {
+      gap: var(--spacing-2);
+    }
+  }

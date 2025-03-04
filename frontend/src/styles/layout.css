@@ -1,7 +1,7 @@
 /* layout.css - Estilos para el layout general y la estructura del dashboard */
 
 /* Contenedor principal */
-.container {
+  .container {
     width: 100%;
     max-width: var(--container-max-width);
     margin: 0 auto;

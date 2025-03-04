@@ -20,6 +20,7 @@
 @import './layout.css';
 
 /* Componentes específicos del dashboard */
+@import './components/header.css';
 @import './components/summary.css';
 @import './components/habits.css';
 @import './components/caffeine.css';
