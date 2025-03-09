@@ -18,7 +18,8 @@
 @import './forms.css';
 @import './animations.css';
 @import './layout.css';
-
+/*componentes de ui*/
+@import './components/modal.css';
 /* Componentes específicos del dashboard */
 @import './components/header.css';
 @import './components/summary.css';
@@ -29,7 +30,6 @@
 @import './components/stats.css';
 @import './components/progress.css';
 @import './components/cards.css';
-@import './components/notes.css';
 @import './components/reminders.css';
 
 /* Media queries responsivas generales */

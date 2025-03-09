@@ -1,40 +1,62 @@
-import { useState, useMemo, useEffect } from 'react';
-import { GetAllCaffeineBeverages, CreateCaffeineIntake, DeleteCaffeineIntake, UpdateCaffeineIntake } from "../../../wailsjs/go/api/CaffeineController";
+import { useState, useMemo, useEffect, useRef } from 'react';
+import { GetAllCaffeineBeverages, CreateCaffeineIntake, DeleteCaffeineIntake, UpdateCaffeineIntake } from "@api/CaffeineController";
+import {Modal , ConfirmDialog} from '../ui'
+import CaffeineIntakeForm from '../forms/CaffeineIntakeForm';
+import useConfirmDialog from '@hooks/useConfirmDialog';
 
 function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDeleted, onIntakeUpdated }) {
   const [beverages, setBeverages] = useState([]);
-  const [selectedBeverage, setSelectedBeverage] = useState(null);
-  const [amount, setAmount] = useState(1);
-  const [isAddingIntake, setIsAddingIntake] = useState(false);
-  const [isEditingIntake, setIsEditingIntake] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [editingIntakeId, setEditingIntakeId] = useState(null);
-  const [intakeDateTime, setIntakeDateTime] = useState('');
+  const [currentIntake, setCurrentIntake] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  // Hook personalizado para el diálogo de confirmación
+  const [confirmDialogProps, confirm] = useConfirmDialog({
+    title: 'Eliminar registro',
+    message: '¿Estás seguro de que quieres eliminar este registro de consumo de cafeína? Esta acción no se puede deshacer.',
+    confirmText: 'Eliminar',
+    confirmButtonClass: 'btn-danger'
+  });
+
+  // Referencia al formulario
+  const formRef = useRef(null);
+
   useEffect(() => {
     console.log("[CaffeinePanel] Props recibidas - todayTotal:", todayTotal);
   }, [todayTotal]);
-  // Convertir fecha a formato string YYYY-MM-DD para comparaciones
+
+  // Formatear fecha a formato local YYYY-MM-DD para comparaciones
+  const formatDateToLocalString = (dateInput) => {
+    if (!dateInput) return '';
+
+    try {
+      const year = dateInput.getFullYear();
+      const month = String(dateInput.getMonth() + 1).padStart(2, '0');
+      const day = String(dateInput.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    } catch (e) {
+      console.error("Error formateando fecha:", e);
+      return '';
+    }
+  };
+
+  // Función para formatear números con 2 decimales
+  const formatCaffeineAmount = (amount) => {
+    if (amount === null || amount === undefined) return "0.00";
+    return Number(amount).toFixed(2);
+  };
+
   const dateString = useMemo(() => {
-    return date.toISOString().split('T')[0];
+    return formatDateToLocalString(date);
   }, [date]);
 
-  // Inicializar la fecha y hora actual para el selector
-  useEffect(() => {
-    setCurrentDateTime();
-  }, []);
-
-  // Función para establecer la fecha y hora actual en el formato requerido por input datetime-local
-  const setCurrentDateTime = () => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-
-    const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
-    setIntakeDateTime(formattedDateTime);
-  };
+  // Verificar si el día seleccionado es hoy
+  const isToday = useMemo(() => {
+    const today = new Date();
+    return formatDateToLocalString(date) === formatDateToLocalString(today);
+  }, [date]);
 
   // Cargar las bebidas disponibles
   useEffect(() => {
@@ -42,9 +64,6 @@ function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDel
       try {
         const result = await GetAllCaffeineBeverages(false);
         setBeverages(result || []);
-        if (result && result.length > 0) {
-          setSelectedBeverage(result[0]);
-        }
       } catch (error) {
         console.error("Error al cargar bebidas:", error);
       }
@@ -53,18 +72,14 @@ function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDel
     loadBeverages();
   }, []);
 
-  // Filtrar intakes para el día actual
-  const todayIntakes = useMemo(() => {
+  // Ordenar intakes por hora descendente
+  const sortedIntakes = useMemo(() => {
     if (!intakes || intakes.length === 0) return [];
 
-    return intakes.filter(intake => {
-      if (!intake.timestamp) return false;
-      const intakeDate = new Date(intake.timestamp);
-      return intakeDate.toISOString().split('T')[0] === dateString;
-    }).sort((a, b) => {
+    return [...intakes].sort((a, b) => {
       return new Date(b.timestamp) - new Date(a.timestamp);
     });
-  }, [intakes, dateString]);
+  }, [intakes]);
 
   // Calcular el porcentaje de cafeína consumido (límite recomendado: 400mg)
   const caffeinePercentage = useMemo(() => {
@@ -83,145 +98,96 @@ function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDel
     return barClass;
   }, [caffeinePercentage]);
 
-
-  // Función para mostrar/ocultar el formulario de registro
-  const toggleAddIntakeForm = () => {
-    if (isEditingIntake) {
-      setIsEditingIntake(false);
-      setEditingIntakeId(null);
-    }
-
-    setIsAddingIntake(prev => !prev);
-
-    if (!isAddingIntake) {
-      // Si estamos abriendo el formulario, resetear los valores
-      setAmount(1);
-      if (beverages && beverages.length > 0) {
-        setSelectedBeverage(beverages[0]);
-      }
-      setCurrentDateTime();
-    }
+  // Abrir el modal para añadir una nueva ingesta
+  const openAddModal = () => {
+    setIsEditing(false);
+    setEditingIntakeId(null);
+    setCurrentIntake(null);
+    setIsModalOpen(true);
   };
 
-  // Función para editar una ingesta existente
-  const handleEditIntake = (intake) => {
-    // Buscar la bebida correspondiente
-    const beverage = beverages.find(b => b.id === intake.beverage_id);
-    if (beverage) {
-      setSelectedBeverage(beverage);
-    }
-
-    // Establecer cantidad
-    setAmount(intake.amount);
-
+  // Abrir el modal para editar una ingesta existente
+  const openEditModal = (intake) => {
     // Formatear fecha y hora para el input datetime-local
-    const intakeDate = new Date(intake.timestamp);
-    const year = intakeDate.getFullYear();
-    const month = String(intakeDate.getMonth() + 1).padStart(2, '0');
-    const day = String(intakeDate.getDate()).padStart(2, '0');
-    const hours = String(intakeDate.getHours()).padStart(2, '0');
-    const minutes = String(intakeDate.getMinutes()).padStart(2, '0');
+    let formattedTimestamp = '';
+    if (intake.timestamp) {
+      const intakeDate = new Date(intake.timestamp);
+      const year = intakeDate.getFullYear();
+      const month = String(intakeDate.getMonth() + 1).padStart(2, '0');
+      const day = String(intakeDate.getDate()).padStart(2, '0');
+      const hours = String(intakeDate.getHours()).padStart(2, '0');
+      const minutes = String(intakeDate.getMinutes()).padStart(2, '0');
 
-    const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
-    setIntakeDateTime(formattedDateTime);
+      formattedTimestamp = `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
 
-    // Guardar el ID de la ingesta que estamos editando
+    // Crear objeto con los datos formateados para pasar al formulario
+    const formattedIntake = {
+      ...intake,
+      timestamp: formattedTimestamp
+    };
+
+    setIsEditing(true);
     setEditingIntakeId(intake.id);
-
-    // Mostrar el formulario en modo edición
-    setIsEditingIntake(true);
-    setIsAddingIntake(false);
+    setCurrentIntake(formattedIntake);
+    setIsModalOpen(true);
   };
 
-  // Función para cambiar la bebida seleccionada
-  const handleBeverageChange = (event) => {
-    const beverageId = parseInt(event.target.value);
-    const beverage = beverages.find(b => b.id === beverageId);
-    setSelectedBeverage(beverage);
-  };
-
-  // Función para enviar el registro de consumo
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (!selectedBeverage) return;
-
+  // Manejar envío del formulario
+  const handleFormSubmit = async (formData) => {
     setLoading(true);
 
     try {
-      // Obtener la fecha y hora seleccionada o usar la actual
-      let timestamp;
-      if (intakeDateTime) {
-        timestamp = new Date(intakeDateTime).toISOString();
-      } else {
-        timestamp = new Date().toISOString();
-      }
-
-      if (isEditingIntake) {
+      if (isEditing) {
         // Actualizar una ingesta existente
-        const updateData = {
-          timestamp: timestamp,
-          beverage_id: selectedBeverage.id,
-          amount: amount,
-          unit: selectedBeverage.standard_unit
-        };
+        await UpdateCaffeineIntake(editingIntakeId, formData);
 
-        await UpdateCaffeineIntake(editingIntakeId, updateData);
-
-        // Limpiar formulario y ocultar
-        setAmount(1);
-        setIsEditingIntake(false);
-        setEditingIntakeId(null);
         console.log("[CaffeinePanel] Ingesta actualizada con éxito, ID:", editingIntakeId);
-        // Notificar al componente padre que se ha actualizado una ingesta
+        // Notificar al componente padre
         if (onIntakeUpdated && typeof onIntakeUpdated === 'function') {
           onIntakeUpdated(editingIntakeId);
         }
       } else {
         // Crear una nueva ingesta
-        const intakeData = {
-          timestamp: timestamp,
-          beverage_id: selectedBeverage.id,
-          amount: amount,
-          unit: selectedBeverage.standard_unit
-        };
+        const newIntake = await CreateCaffeineIntake(formData);
 
-        const newIntake = await CreateCaffeineIntake(intakeData);
-
-        // Limpiar formulario y ocultar
-        setAmount(1);
-        setIsAddingIntake(false);
         console.log("[CaffeinePanel] Nueva ingesta creada con éxito:", newIntake);
-
-        // Notificar al componente padre que se ha creado una nueva ingesta
+        // Notificar al componente padre
         if (onIntakeCreated && typeof onIntakeCreated === 'function') {
           onIntakeCreated(newIntake);
         }
       }
+
+      // Cerrar el modal
+      setIsModalOpen(false);
     } catch (error) {
-      console.error("Error al registrar consumo:", error);
+      console.error("Error al guardar consumo:", error);
+      // El manejo de errores específicos del formulario ahora está dentro del componente del formulario
     } finally {
       setLoading(false);
     }
   };
 
-  // Función para eliminar una ingesta de cafeína
-  const handleDeleteIntake = async (intakeId) => {
-    if (!window.confirm('¿Estás seguro de que quieres eliminar este registro?')) {
-      return;
-    }
+  // Función para manejar solicitud de eliminación
+  const handleDeleteRequest = async (intakeId) => {
+    // Usar el hook de confirmación
+    const confirmed = await confirm();
 
-    setLoading(true);
-    try {
-      await DeleteCaffeineIntake(intakeId);
-      console.log("[CaffeinePanel] Ingesta eliminada con éxito, ID:", intakeId);
-      // Notificar al componente padre que se ha eliminado una ingesta
-      if (onIntakeDeleted && typeof onIntakeDeleted === 'function') {
-        onIntakeDeleted(intakeId);
+    if (confirmed) {
+      setLoading(true);
+      try {
+        await DeleteCaffeineIntake(intakeId);
+        console.log("[CaffeinePanel] Ingesta eliminada con éxito, ID:", intakeId);
+
+        // Notificar al componente padre
+        if (onIntakeDeleted && typeof onIntakeDeleted === 'function') {
+          onIntakeDeleted(intakeId);
+        }
+      } catch (error) {
+        console.error("Error al eliminar el registro:", error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error al eliminar el registro:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -232,6 +198,47 @@ function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDel
     return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
   };
 
+  // Formatear la fecha para mostrar
+  const formatDate = (dateInput) => {
+    if (!dateInput) return '';
+    // Verificar si es hoy
+    if (isToday) {
+      return "Hoy";
+    }
+    // Si no es hoy, mostrar la fecha formateada
+    return dateInput.toLocaleDateString('es-ES', {
+      day: 'numeric',
+      month: 'long'
+    });
+  };
+
+  // Renderizar el footer del modal
+  const renderModalFooter = () => (
+    <>
+      <button
+        type="button"
+        className="btn btn-secondary"
+        onClick={() => setIsModalOpen(false)}
+        disabled={loading}
+      >
+        Cancelar
+      </button>
+      <button
+        type="button"
+        className="btn btn-primary"
+        onClick={() => {
+          // Usar la referencia para llamar al método submitForm
+          if (formRef.current) {
+            formRef.current.submitForm();
+          }
+        }}
+        disabled={loading}
+      >
+        {loading ? 'Guardando...' : isEditing ? 'Actualizar' : 'Guardar'}
+      </button>
+    </>
+  );
+
   return (
     <div className="caffeine-panel">
       <div className="bento-card-header">
@@ -239,7 +246,7 @@ function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDel
         <div className="bento-card-actions">
           <button
             className="btn btn-icon"
-            onClick={toggleAddIntakeForm}
+            onClick={openAddModal}
             title="Registrar consumo"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -262,8 +269,8 @@ function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDel
         </div>
 
         <div className="caffeine-info">
-          <div className="caffeine-total">{Math.round(todayTotal)} mg</div>
-          <div className="caffeine-label">de cafeína hoy</div>
+          <div className="caffeine-total">{formatCaffeineAmount(todayTotal)} mg</div>
+          <div className="caffeine-label">de cafeína {formatDate(date)}</div>
 
           <div className="caffeine-limit">
             <div
@@ -274,83 +281,19 @@ function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDel
         </div>
       </div>
 
-      {(isAddingIntake || isEditingIntake) && (
-        <div className="caffeine-add-form">
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label className="form-label">Bebida</label>
-              <select
-                className="form-control"
-                onChange={handleBeverageChange}
-                value={selectedBeverage?.id || ''}
-                disabled={loading}
-              >
-                {beverages.map(beverage => (
-                  <option key={beverage.id} value={beverage.id}>
-                    {beverage.name} ({beverage.caffeine_content} mg / {beverage.standard_unit})
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Cantidad</label>
-              <input
-                type="number"
-                className="form-control"
-                min="0.1"
-                step="0.1"
-                value={amount}
-                onChange={(e) => setAmount(parseFloat(e.target.value))}
-                disabled={loading}
-              />
-            </div>
-
-            <div className="form-group">
-              <label className="form-label">Fecha y Hora</label>
-              <input
-                type="datetime-local"
-                className="form-control"
-                value={intakeDateTime}
-                onChange={(e) => setIntakeDateTime(e.target.value)}
-                disabled={loading}
-              />
-            </div>
-
-            <div className="form-buttons">
-              <button
-                type="button"
-                className="btn btn-text"
-                onClick={isEditingIntake ? () => setIsEditingIntake(false) : toggleAddIntakeForm}
-                disabled={loading}
-              >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={loading || !selectedBeverage}
-              >
-                {loading ? 'Guardando...' : isEditingIntake ? 'Actualizar' : 'Guardar'}
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {todayIntakes.length > 0 && (
+      {sortedIntakes.length > 0 ? (
         <div className="caffeine-log">
-          <div className="caffeine-log-title">Registros de hoy</div>
-          {todayIntakes.slice(0, 3).map(intake => (
+          <div className="caffeine-log-title">Registros {isToday ? "de hoy" : "del día"}</div>
+          {sortedIntakes.slice(0, 3).map(intake => (
             <div key={intake.id} className="caffeine-log-item">
               <div className="caffeine-log-time">{formatTime(intake.timestamp)}</div>
               <div className="caffeine-log-beverage">{intake.beverage_name}</div>
-              <div className="caffeine-log-amount">{intake.total_caffeine} mg</div>
+              <div className="caffeine-log-amount">{formatCaffeineAmount(intake.total_caffeine)} mg</div>
               <div className="caffeine-log-actions">
                 <button
                   className="btn btn-icon btn-sm"
-                  onClick={() => handleEditIntake(intake)}
-                  disabled={loading || isEditingIntake || isAddingIntake}
+                  onClick={() => openEditModal(intake)}
+                  disabled={loading}
                   title="Editar registro"
                   style={{ color: 'var(--color-primary)' }}
                 >
@@ -360,7 +303,7 @@ function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDel
                 </button>
                 <button
                   className="btn btn-icon btn-sm"
-                  onClick={() => handleDeleteIntake(intake.id)}
+                  onClick={() => handleDeleteRequest(intake.id)}
                   disabled={loading}
                   title="Eliminar registro"
                   style={{ color: 'var(--color-error)' }}
@@ -375,13 +318,37 @@ function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDel
               </div>
             </div>
           ))}
-          {todayIntakes.length > 3 && (
+          {sortedIntakes.length > 3 && (
             <div className="caffeine-log-more">
-              +{todayIntakes.length - 3} más
+              +{sortedIntakes.length - 3} más
             </div>
           )}
         </div>
+      ) : (
+        <div className="caffeine-log-empty">
+          No hay registros de cafeína para este día
+        </div>
       )}
+
+      {/* Modal para crear/editar ingesta */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={isEditing ? "Editar consumo de cafeína" : "Registrar consumo de cafeína"}
+        footer={renderModalFooter()}
+      >
+        <CaffeineIntakeForm
+          ref={formRef}
+          beverages={beverages}
+          initialData={currentIntake}
+          onSubmit={handleFormSubmit}
+          isLoading={loading}
+          selectedDate={date} // Pasar la fecha seleccionada al formulario
+        />
+      </Modal>
+
+      {/* Diálogo de confirmación para eliminar */}
+      <ConfirmDialog {...confirmDialogProps} />
     </div>
   );
 }

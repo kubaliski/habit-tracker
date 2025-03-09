@@ -1,114 +1,197 @@
 /* mood.css - Estilos para el componente de estado de ánimo */
 
 .mood-panel {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
 
-  .mood-today {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: var(--spacing-5);
-    padding: var(--spacing-4);
-    background-color: var(--color-gray-50);
-    border-radius: var(--border-radius-lg);
-  }
+.mood-today {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: var(--spacing-5);
+  padding: var(--spacing-4);
+  background-color: var(--color-gray-50);
+  border-radius: var(--border-radius-lg);
+}
 
-  .mood-emoji {
-    font-size: 48px;
-    margin-bottom: var(--spacing-2);
-  }
+.mood-emoji {
+  font-size: 48px;
+  margin-bottom: var(--spacing-2);
+}
 
-  .mood-value {
-    font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-semibold);
-  }
+.mood-value {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+}
 
-  .mood-description {
-    color: var(--color-gray-600);
-    margin-top: var(--spacing-1);
-    text-align: center;
-  }
+.mood-description {
+  color: var(--color-gray-600);
+  margin-top: var(--spacing-1);
+  text-align: center;
+}
 
-  .mood-chart-container {
-    height: 150px;
-    margin-bottom: var(--spacing-4);
-    flex-grow: 1;
-  }
+.mood-chart-container {
+  height: 150px;
+  margin-bottom: var(--spacing-4);
+  flex-grow: 1;
+}
 
+.mood-factors {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-3);
+}
+
+.mood-factor {
+  text-align: center;
+  padding: var(--spacing-2);
+  background-color: var(--color-gray-100);
+  border-radius: var(--border-radius-md);
+}
+
+.mood-factor-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-600);
+  margin-bottom: var(--spacing-1);
+}
+
+.mood-factor-value {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+}
+
+.mood-notes {
+  margin-top: var(--spacing-4);
+  padding: var(--spacing-3);
+  background-color: var(--color-gray-50);
+  border-radius: var(--border-radius-md);
+}
+
+.mood-notes-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-gray-600);
+  margin-bottom: var(--spacing-1);
+}
+
+.mood-notes-content {
+  color: var(--color-gray-700);
+  font-size: var(--font-size-base);
+  white-space: pre-wrap;
+}
+
+.mood-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--spacing-6);
+  color: var(--color-gray-500);
+  flex-grow: 1;
+}
+
+.mood-form {
+  width: 100%;
+}
+
+/* Estilos para botones con flexbox (original) */
+.mood-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-4);
+}
+
+/* Estilos para la cuadrícula de botones de estado de ánimo */
+.mood-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--spacing-2);
+  width: 100%;
+  margin-top: var(--spacing-3);
+}
+
+/* Estilos del botón de estado de ánimo */
+.mood-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-2);
+  border-radius: var(--border-radius-md);
+  background-color: var(--color-gray-100);
+  border: 1px solid var(--color-gray-200);
+  cursor: pointer;
+  transition: all var(--transition-fast) var(--transition-timing);
+}
+
+.mood-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+  background-color: var(--color-gray-200);
+}
+
+.mood-button.active {
+  background-color: rgba(79, 70, 229, 0.1);
+  border: 1px solid var(--color-primary);
+  box-shadow: 0 0 0 1px var(--color-primary-light);
+}
+
+.mood-button-emoji {
+  font-size: 24px;
+  margin-bottom: var(--spacing-1);
+}
+
+.mood-button-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-700);
+}
+
+/* Error en el formulario de estado de ánimo */
+.error-message {
+  background-color: rgba(239, 68, 68, 0.1);
+  border-left: 3px solid var(--color-error);
+  color: var(--color-error);
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-4);
+}
+
+/* Estilos para las etiquetas de los rangos */
+.range-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--spacing-1);
+  color: var(--color-gray-600);
+  font-size: var(--font-size-sm);
+}
+
+.range-value {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-gray-900);
+}
+
+/* Media queries específicas para este componente */
+@media (max-width: 768px) {
   .mood-factors {
-    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .mood-buttons-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--spacing-3);
+  }
+}
+
+@media (max-width: 480px) {
+  .mood-factors {
+    grid-template-columns: 1fr;
   }
 
-  .mood-factor {
-    text-align: center;
-    padding: var(--spacing-2);
-    background-color: var(--color-gray-100);
-    border-radius: var(--border-radius-md);
+  .mood-buttons-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
-
-  .mood-factor-label {
-    font-size: var(--font-size-sm);
-    color: var(--color-gray-600);
-    margin-bottom: var(--spacing-1);
-  }
-
-  .mood-factor-value {
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-medium);
-  }
-
-  .mood-buttons {
-    display: flex;
-    justify-content: center;
-    gap: var(--spacing-2);
-    margin-top: var(--spacing-4);
-  }
-
-  .mood-button {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: var(--spacing-2);
-    border-radius: var(--border-radius-md);
-    background-color: var(--color-gray-100);
-    cursor: pointer;
-    transition: all var(--transition-fast) var(--transition-timing);
-  }
-
-  .mood-button:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-sm);
-  }
-
-  .mood-button.active {
-    background-color: rgba(79, 70, 229, 0.1);
-    border: 1px solid var(--color-primary);
-  }
-
-  .mood-button-emoji {
-    font-size: 24px;
-    margin-bottom: var(--spacing-1);
-  }
-
-  .mood-button-label {
-    font-size: var(--font-size-xs);
-    color: var(--color-gray-700);
-  }
-
-  /* Media queries específicas para este componente */
-  @media (max-width: 768px) {
-    .mood-factors {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (max-width: 480px) {
-    .mood-factors {
-      grid-template-columns: 1fr;
-    }
-  }
+}

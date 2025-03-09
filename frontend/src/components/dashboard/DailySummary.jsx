@@ -1,6 +1,11 @@
-import { useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { GetHabitLogs } from "@api/HabitController";
+import { getMoodInfo } from '@utils/getMoodInfo';
 
 function DailySummary({ date, habits, todayCaffeine, moodEntries }) {
+  const [habitCompletions, setHabitCompletions] = useState({});
+  const [loadingStats, setLoadingStats] = useState(true);
+
   // Formatear fecha para mostrar
   const formattedDate = useMemo(() => {
     return date.toLocaleDateString('es-ES', {
@@ -15,21 +20,55 @@ function DailySummary({ date, habits, todayCaffeine, moodEntries }) {
     return date.toISOString().split('T')[0];
   }, [date]);
 
+  // Cargar los registros de los hábitos para la fecha seleccionada
+  useEffect(() => {
+    const loadHabitCompletions = async () => {
+      setLoadingStats(true);
+      const completionsMap = {};
+
+      try {
+        // Solo procesar hábitos activos
+        const activeHabits = habits.filter(habit => habit.active);
+
+        // Para cada hábito activo, verificar si está completado para la fecha seleccionada
+        for (const habit of activeHabits) {
+          const logs = await GetHabitLogs(habit.id, dateString, dateString);
+          if (logs && logs.length > 0) {
+            completionsMap[habit.id] = logs[0].completed;
+          } else {
+            completionsMap[habit.id] = false;
+          }
+        }
+
+        setHabitCompletions(completionsMap);
+      } catch (error) {
+        console.error("Error al cargar estado de los hábitos:", error);
+      } finally {
+        setLoadingStats(false);
+      }
+    };
+
+    if (habits && habits.length > 0) {
+      loadHabitCompletions();
+    } else {
+      setLoadingStats(false);
+    }
+  }, [habits, dateString]);
+
   // Calcular hábitos completados hoy
   const habitStats = useMemo(() => {
     const activeHabits = habits.filter(habit => habit.active);
     const totalActive = activeHabits.length;
 
-    // Aquí normalmente consultaríamos los logs para este día específico
-    // Por ahora, usamos un valor de placeholder
-    const completed = Math.floor(Math.random() * (totalActive + 1));
+    // Contar cuántos hábitos están completados
+    const completed = Object.values(habitCompletions).filter(value => value).length;
 
     return {
       total: totalActive,
       completed,
       percentage: totalActive > 0 ? Math.round((completed / totalActive) * 100) : 0
     };
-  }, [habits, dateString]);
+  }, [habits, habitCompletions]);
 
   // Obtener estado de ánimo para hoy
   const todayMood = useMemo(() => {
@@ -44,31 +83,13 @@ function DailySummary({ date, habits, todayCaffeine, moodEntries }) {
 
     if (!todayEntry) return null;
 
-    // Mapear puntuación a emoji y descripción
-    let emoji = '😐';
-    let description = 'Neutral';
-
-    if (todayEntry.mood_score >= 8) {
-      emoji = '😄';
-      description = 'Excelente';
-    } else if (todayEntry.mood_score >= 6) {
-      emoji = '🙂';
-      description = 'Bien';
-    } else if (todayEntry.mood_score >= 4) {
-      emoji = '😐';
-      description = 'Regular';
-    } else if (todayEntry.mood_score >= 2) {
-      emoji = '😕';
-      description = 'Mal';
-    } else {
-      emoji = '😩';
-      description = 'Muy mal';
-    }
+    // Usar la función getMoodInfo para mantener consistencia con MoodPanel
+    const moodInfo = getMoodInfo(todayEntry.mood_score);
 
     return {
       score: todayEntry.mood_score,
-      emoji,
-      description
+      emoji: moodInfo.emoji,
+      description: moodInfo.description
     };
   }, [moodEntries, dateString]);
 
@@ -87,7 +108,11 @@ function DailySummary({ date, habits, todayCaffeine, moodEntries }) {
       <div className="summary-stats">
         <div className="summary-stat">
           <div className="summary-stat-value">
-            {habitStats.completed}/{habitStats.total}
+            {loadingStats ? (
+              <span className="loading-indicator">...</span>
+            ) : (
+              `${habitStats.completed}/${habitStats.total}`
+            )}
           </div>
           <div className="summary-stat-label">Hábitos completados</div>
           <div className="progress-bar">
@@ -117,16 +142,6 @@ function DailySummary({ date, habits, todayCaffeine, moodEntries }) {
             {todayMood ? todayMood.description : 'No registrado'}
           </div>
         </div>
-      </div>
-
-      <div className="summary-actions">
-        <button className="btn btn-primary">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
-          Registrar actividad
-        </button>
       </div>
     </div>
   );
