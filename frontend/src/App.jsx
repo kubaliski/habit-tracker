@@ -75,6 +75,28 @@ function App() {
     }
   };
 
+  // Función para cargar entradas de estado de ánimo
+  const loadMoodEntries = async () => {
+    try {
+      console.log("[App] Cargando entradas de estado de ánimo...");
+      setLoading(prev => ({ ...prev, mood: true }));
+
+      const monthAgo = new Date();
+      monthAgo.setDate(monthAgo.getDate() - 30);
+      const startDate = formatDateToLocalString(monthAgo);
+      const endDate = formatDateToLocalString(new Date());
+
+      console.log("[App] Solicitando entradas de estado de ánimo desde", startDate, "hasta", endDate);
+      const result = await GetAllMoodEntries(startDate, endDate);
+      setMoodEntries(result || []);
+      console.log("[App] Entradas de estado de ánimo cargadas:", result);
+    } catch (err) {
+      console.error("[App] Error loading mood entries:", err);
+    } finally {
+      setLoading(prev => ({ ...prev, mood: false }));
+    }
+  };
+
   // Función para cargar datos de cafeína
   const loadCaffeineData = async () => {
     try {
@@ -129,18 +151,8 @@ function App() {
     // Cargar los hábitos
     loadHabits();
 
-    // Cargar entradas de estado de ánimo (último mes)
-    const monthAgo = new Date();
-    monthAgo.setDate(monthAgo.getDate() - 30);
-    const startDate = formatDateToLocalString(monthAgo);
-
-    GetAllMoodEntries(startDate, formatDateToLocalString(new Date())).then(result => {
-      setMoodEntries(result || []);
-      setLoading(prev => ({ ...prev, mood: false }));
-    }).catch(err => {
-      console.error("Error loading mood entries:", err);
-      setLoading(prev => ({ ...prev, mood: false }));
-    });
+    // Cargar entradas de estado de ánimo
+    loadMoodEntries();
 
     // Cargar datos de cafeína
     loadCaffeineData();
@@ -226,6 +238,7 @@ function App() {
               <MoodPanel
                 moodEntries={moodEntries}
                 date={date}
+                onMoodEntryChange={loadMoodEntries}
               />
             </div>
 

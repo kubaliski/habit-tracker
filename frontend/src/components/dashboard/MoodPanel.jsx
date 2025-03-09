@@ -1,7 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { CreateMoodEntry, UpdateMoodEntry } from "@api/MoodController";
 
-function MoodPanel({ moodEntries, date }) {
+function MoodPanel({ moodEntries, date, onMoodEntryChange }) {
   const [isAddingMood, setIsAddingMood] = useState(false);
   const [moodScore, setMoodScore] = useState(5);
   const [energyLevel, setEnergyLevel] = useState(5);
@@ -26,14 +26,21 @@ function MoodPanel({ moodEntries, date }) {
     });
   }, [moodEntries, dateString]);
 
-  // Inicializar el formulario con los datos existentes si hay
-  useMemo(() => {
+  // Inicializar el formulario con los datos existentes cuando cambia todayMood
+  useEffect(() => {
     if (todayMood) {
       setMoodScore(todayMood.mood_score || 5);
       setEnergyLevel(todayMood.energy_level || 5);
       setAnxietyLevel(todayMood.anxiety_level || 5);
       setStressLevel(todayMood.stress_level || 5);
       setNotes(todayMood.notes || '');
+    } else {
+      // Resetear a valores predeterminados si no hay entrada para el día seleccionado
+      setMoodScore(5);
+      setEnergyLevel(5);
+      setAnxietyLevel(5);
+      setStressLevel(5);
+      setNotes('');
     }
   }, [todayMood]);
 
@@ -76,18 +83,38 @@ function MoodPanel({ moodEntries, date }) {
         tags: []
       };
 
+      let result;
       if (todayMood && todayMood.id) {
         // Actualizar entrada existente
-        await UpdateMoodEntry(todayMood.id, moodData);
+        result = await UpdateMoodEntry(todayMood.id, moodData);
+        console.log("[MoodPanel] Entrada actualizada:", result);
       } else {
         // Crear nueva entrada
-        await CreateMoodEntry(moodData);
+        result = await CreateMoodEntry(moodData);
+        console.log("[MoodPanel] Nueva entrada creada:", result);
       }
 
-      setIsAddingMood(false);
+      // Notificar al componente padre que la entrada ha sido actualizada
+      // para que pueda recargar las entradas de estado de ánimo
+      if (onMoodEntryChange && typeof onMoodEntryChange === 'function') {
+        onMoodEntryChange();
+      }
 
-      // Aquí normalmente recargaríamos los datos, pero por simplicidad
-      // podemos confiar en que el componente padre ya maneja esto
+      // Actualizar la visualización local de manera temporal
+      // mientras se recarga la lista completa
+      const tempUpdatedEntry = {
+        id: todayMood?.id || result?.id,
+        date: dateString,
+        mood_score: moodScore,
+        energy_level: energyLevel,
+        anxiety_level: anxietyLevel,
+        stress_level: stressLevel,
+        notes: notes,
+        tags: []
+      };
+
+      // Cerrar el formulario solo después de que la operación haya tenido éxito
+      setIsAddingMood(false);
     } catch (error) {
       console.error("Error al guardar estado de ánimo:", error);
     } finally {
