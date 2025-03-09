@@ -261,11 +261,6 @@ function App() {
                 caffeineIntakes={caffeineData.intakes}
               />
             </div>
-
-            {/* Widget de notas - 4 columnas */}
-            <div className="bento-card span-4 row-1">
-              <NotesWidget date={date} />
-            </div>
           </div>
         </main>
       )}
