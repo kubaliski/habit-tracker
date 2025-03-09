@@ -203,7 +203,7 @@ function App() {
         <main className="container">
           <div className="bento-grid">
             {/* Resumen diario - 4 columnas */}
-            <div className="bento-card span-4 row-1">
+            <div className="bento-card span-12 row-1">
               <DailySummary
                 date={date}
                 habits={habits}
@@ -213,7 +213,7 @@ function App() {
             </div>
 
             {/* Panel de hábitos - 4 columnas, 2 filas */}
-            <div className="bento-card span-4 row-2">
+            <div className="bento-card span-4 row-1">
               <HabitsPanel
                 habits={habits}
                 date={date}
@@ -234,7 +234,7 @@ function App() {
             </div>
 
             {/* Panel de estado de ánimo - 4 columnas, 2 filas */}
-            <div className="bento-card span-4 row-2">
+            <div className="bento-card span-4 row-1">
               <MoodPanel
                 moodEntries={moodEntries}
                 date={date}
