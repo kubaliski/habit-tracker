@@ -39,10 +39,11 @@ function StatsPanel({ habits, moodEntries, caffeineIntakes }) {
         } catch (moodError) {
           console.error("Error al cargar estadísticas de estado de ánimo:", moodError);
           moodStats = {
-            average_mood: 0,
+            avg_mood_score: 0,
             total_entries: 0,
-            best_mood: 0,
-            worst_mood: 0
+            avg_anxiety_level: 0,
+            avg_energy_level: 0,
+            avg_stress_level: 0
           };
         }
 
@@ -73,7 +74,7 @@ function StatsPanel({ habits, moodEntries, caffeineIntakes }) {
         setStats({
           general: {
             habitCompletionRate: habitStats?.completion_rate || 0,
-            avgMood: moodStats?.average_mood || 0,
+            avgMood: moodStats?.avg_mood_score || 0,
             avgCaffeine: caffeineStats?.avg_daily_caffeine || 0,
             streakDays: habitStats?.longest_streak || 0
           },
@@ -328,44 +329,33 @@ function StatsPanel({ habits, moodEntries, caffeineIntakes }) {
                 <div className="stats-grid">
                   <div className="stats-item">
                     <div className="stats-label">Promedio</div>
-                    <div className="stats-value">{safeNumberFormat(stats.mood?.average_mood, 1)}/10</div>
+                    <div className="stats-value">{safeNumberFormat(stats.mood?.avg_mood_score, 1)}/10</div>
                     <div className="stats-trend neutral">
                       Basado en {safeValue(stats.mood?.total_entries, 0)} registros
                     </div>
                   </div>
 
                   <div className="stats-item">
-                    <div className="stats-label">Mejor día</div>
-                    <div className="stats-value">{safeValue(stats.mood?.best_mood)}/10</div>
-                    <div className="stats-trend up">
-                      {stats.mood?.best_mood_date ? formatDate(stats.mood.best_mood_date) : ""}
+                    <div className="stats-label">Ansiedad promedio</div>
+                    <div className="stats-value">{safeNumberFormat(stats.mood?.avg_anxiety_level, 1)}/10</div>
+                    <div className="stats-trend neutral">
+                      Durante {stats.mood?.period || 'el período seleccionado'}
                     </div>
                   </div>
 
                   <div className="stats-item">
-                    <div className="stats-label">Peor día</div>
-                    <div className="stats-value">{safeValue(stats.mood?.worst_mood)}/10</div>
-                    <div className="stats-trend down">
-                      {stats.mood?.worst_mood_date ? formatDate(stats.mood.worst_mood_date) : ""}
+                    <div className="stats-label">Energía promedio</div>
+                    <div className="stats-value">{safeNumberFormat(stats.mood?.avg_energy_level, 1)}/10</div>
+                    <div className="stats-trend neutral">
+                      Durante {stats.mood?.period || 'el período seleccionado'}
                     </div>
                   </div>
 
                   <div className="stats-item">
-                    <div className="stats-label">Tendencia</div>
-                    <div className="stats-value">
-                      {stats.mood?.trend === 'up' ? 'Mejorando' :
-                       stats.mood?.trend === 'down' ? 'Empeorando' : 'Estable'}
-                    </div>
-                    <div className={`stats-trend ${stats.mood?.trend || 'neutral'}`}>
-                      <svg className="stats-trend-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        {stats.mood?.trend === 'up' ?
-                          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline> :
-                         stats.mood?.trend === 'down' ?
-                          <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline> :
-                          <line x1="5" y1="12" x2="19" y2="12"></line>
-                        }
-                      </svg>
-                      Últimos {period === 'week' ? 7 : period === 'month' ? 30 : 365} días
+                    <div className="stats-label">Estrés promedio</div>
+                    <div className="stats-value">{safeNumberFormat(stats.mood?.avg_stress_level, 1)}/10</div>
+                    <div className="stats-trend neutral">
+                      Durante {stats.mood?.period || 'el período seleccionado'}
                     </div>
                   </div>
                 </div>
