@@ -137,6 +137,13 @@ function App() {
     }
   };
 
+  // Función para recargar todos los datos
+  const reloadAllData = useCallback(() => {
+    loadHabits();
+    loadMoodEntries();
+    loadCaffeineData();
+  }, [formattedDate, formatDateToLocalString]);
+
   // Cargar todos los datos iniciales
   useEffect(() => {
     // Cargar información de la aplicación
@@ -148,14 +155,8 @@ function App() {
       setLoading(prev => ({ ...prev, app: false }));
     });
 
-    // Cargar los hábitos
-    loadHabits();
-
-    // Cargar entradas de estado de ánimo
-    loadMoodEntries();
-
-    // Cargar datos de cafeína
-    loadCaffeineData();
+    // Cargar los datos
+    reloadAllData();
   }, [formattedDate, formatDateToLocalString]); // Recarga cuando cambia la fecha seleccionada
 
   // Manejador para cuando se selecciona una fecha en el calendario
@@ -192,7 +193,10 @@ function App() {
 
   return (
     <div className="app-container">
-      <Header appInfo={appInfo} />
+      <Header
+        appInfo={appInfo}
+        onDataCleared={reloadAllData} // Pasar función para recargar datos después de borrar
+      />
 
       {isLoading ? (
         <div className="loading-container">

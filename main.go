@@ -33,6 +33,7 @@ func main() {
 			app.moodAPI,
 			app.caffeineAPI,
 			app.statsAPI,
+			app.databaseAPI, // Añadido el nuevo controlador
 		},
 	})
 

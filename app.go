@@ -17,6 +17,7 @@ type App struct {
 	moodAPI     *api.MoodController
 	caffeineAPI *api.CaffeineController
 	statsAPI    *api.StatsController
+	databaseAPI *api.DatabaseController
 	repository  database.Repository
 }
 
@@ -42,6 +43,7 @@ func NewApp() *App {
 	moodAPI := api.NewMoodController(repository)
 	caffeineAPI := api.NewCaffeineController(repository)
 	statsAPI := api.NewStatsController(repository)
+	databaseAPI := api.NewDatabaseController(repository)
 
 	return &App{
 		repository:  repository,
@@ -49,6 +51,7 @@ func NewApp() *App {
 		moodAPI:     moodAPI,
 		caffeineAPI: caffeineAPI,
 		statsAPI:    statsAPI,
+		databaseAPI: databaseAPI,
 	}
 }
 

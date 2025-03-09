@@ -48,6 +48,9 @@ type Repository interface {
 	GetCaffeineStats(period string) (map[string]interface{}, error)
 	GetCorrelationStats() (map[string]interface{}, error)
 
+	// Método para vaciar la base de datos
+	ClearAllData(reinitializeDefaults bool) error
+
 	// Inicialización y cierre
 	InitializeDefaultCaffeineBeverages() error
 	Close() error
