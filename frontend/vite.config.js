@@ -9,7 +9,8 @@ export default defineConfig({
       '@': path.resolve(__dirname,'./src'),
       '@components':path.resolve(__dirname,'./src/components'),
       '@hooks':path.resolve(__dirname, './src/hooks'),
-      '@api':path.resolve(__dirname,'./wailsjs/go/api')
+      '@api':path.resolve(__dirname,'./wailsjs/go/api'),
+      '@utils':path.resolve(__dirname,'./src/utils')
     }
   }
 })

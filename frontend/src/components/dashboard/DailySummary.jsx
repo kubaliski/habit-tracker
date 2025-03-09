@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { GetHabitLogs } from "@api/HabitController";
+import { getMoodInfo } from '@utils/getMoodInfo';
 
 function DailySummary({ date, habits, todayCaffeine, moodEntries }) {
   const [habitCompletions, setHabitCompletions] = useState({});
@@ -82,31 +83,13 @@ function DailySummary({ date, habits, todayCaffeine, moodEntries }) {
 
     if (!todayEntry) return null;
 
-    // Mapear puntuación a emoji y descripción
-    let emoji = '😐';
-    let description = 'Neutral';
-
-    if (todayEntry.mood_score >= 8) {
-      emoji = '😄';
-      description = 'Excelente';
-    } else if (todayEntry.mood_score >= 6) {
-      emoji = '🙂';
-      description = 'Bien';
-    } else if (todayEntry.mood_score >= 4) {
-      emoji = '😐';
-      description = 'Regular';
-    } else if (todayEntry.mood_score >= 2) {
-      emoji = '😕';
-      description = 'Mal';
-    } else {
-      emoji = '😩';
-      description = 'Muy mal';
-    }
+    // Usar la función getMoodInfo para mantener consistencia con MoodPanel
+    const moodInfo = getMoodInfo(todayEntry.mood_score);
 
     return {
       score: todayEntry.mood_score,
-      emoji,
-      description
+      emoji: moodInfo.emoji,
+      description: moodInfo.description
     };
   }, [moodEntries, dateString]);
 

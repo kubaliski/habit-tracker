@@ -1,21 +1,23 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { CreateMoodEntry, UpdateMoodEntry } from "@api/MoodController";
+import { Modal } from '../ui';
+import MoodForm from '../forms/MoodForm';
+import { getMoodInfo } from '@utils/getMoodInfo';
 
 function MoodPanel({ moodEntries, date, onMoodEntryChange }) {
-  const [isAddingMood, setIsAddingMood] = useState(false);
-  const [moodScore, setMoodScore] = useState(5);
-  const [energyLevel, setEnergyLevel] = useState(5);
-  const [anxietyLevel, setAnxietyLevel] = useState(5);
-  const [stressLevel, setStressLevel] = useState(5);
-  const [notes, setNotes] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [currentMood, setCurrentMood] = useState(null);
+
+  // Referencia para el formulario
+  const formRef = useRef(null);
 
   // Convertir fecha a formato string YYYY-MM-DD para comparaciones
   const dateString = useMemo(() => {
     return date.toISOString().split('T')[0];
   }, [date]);
 
-  // Obtener entrada de estado de ánimo para hoy
+  // Obtener entrada de estado de ánimo para el día seleccionado
   const todayMood = useMemo(() => {
     if (!moodEntries || moodEntries.length === 0) return null;
 
@@ -26,61 +28,24 @@ function MoodPanel({ moodEntries, date, onMoodEntryChange }) {
     });
   }, [moodEntries, dateString]);
 
-  // Inicializar el formulario con los datos existentes cuando cambia todayMood
+  // Actualizar el estado actual cuando cambia todayMood
   useEffect(() => {
-    if (todayMood) {
-      setMoodScore(todayMood.mood_score || 5);
-      setEnergyLevel(todayMood.energy_level || 5);
-      setAnxietyLevel(todayMood.anxiety_level || 5);
-      setStressLevel(todayMood.stress_level || 5);
-      setNotes(todayMood.notes || '');
-    } else {
-      // Resetear a valores predeterminados si no hay entrada para el día seleccionado
-      setMoodScore(5);
-      setEnergyLevel(5);
-      setAnxietyLevel(5);
-      setStressLevel(5);
-      setNotes('');
-    }
+    setCurrentMood(todayMood);
   }, [todayMood]);
 
-  // Mapear puntuación a emoji y descripción
-  const getMoodInfo = (score) => {
-    const moodMap = {
-      1: { emoji: '😩', description: 'Muy mal' },
-      2: { emoji: '😟', description: 'Mal' },
-      3: { emoji: '😕', description: 'Regular bajo' },
-      4: { emoji: '😐', description: 'Regular' },
-      5: { emoji: '😐', description: 'Neutral' },
-      6: { emoji: '🙂', description: 'Regular alto' },
-      7: { emoji: '😊', description: 'Bien' },
-      8: { emoji: '😄', description: 'Muy bien' },
-      9: { emoji: '😁', description: 'Excelente' },
-      10: { emoji: '🤩', description: 'Increíble' }
-    };
-
-    return moodMap[score] || { emoji: '😐', description: 'Neutral' };
-  };
-
-  // Función para mostrar/ocultar el formulario
-  const toggleMoodForm = () => {
-    setIsAddingMood(prev => !prev);
+  // Función para mostrar el modal
+  const openModal = () => {
+    setIsModalOpen(true);
   };
 
   // Función para guardar registro de estado de ánimo
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleFormSubmit = async (formData) => {
     setLoading(true);
 
     try {
       const moodData = {
         date: dateString,
-        mood_score: moodScore,
-        energy_level: energyLevel,
-        anxiety_level: anxietyLevel,
-        stress_level: stressLevel,
-        notes: notes,
-        tags: []
+        ...formData
       };
 
       let result;
@@ -95,26 +60,12 @@ function MoodPanel({ moodEntries, date, onMoodEntryChange }) {
       }
 
       // Notificar al componente padre que la entrada ha sido actualizada
-      // para que pueda recargar las entradas de estado de ánimo
       if (onMoodEntryChange && typeof onMoodEntryChange === 'function') {
         onMoodEntryChange();
       }
 
-      // Actualizar la visualización local de manera temporal
-      // mientras se recarga la lista completa
-      const tempUpdatedEntry = {
-        id: todayMood?.id || result?.id,
-        date: dateString,
-        mood_score: moodScore,
-        energy_level: energyLevel,
-        anxiety_level: anxietyLevel,
-        stress_level: stressLevel,
-        notes: notes,
-        tags: []
-      };
-
-      // Cerrar el formulario solo después de que la operación haya tenido éxito
-      setIsAddingMood(false);
+      // Cerrar el modal
+      setIsModalOpen(false);
     } catch (error) {
       console.error("Error al guardar estado de ánimo:", error);
     } finally {
@@ -126,26 +77,32 @@ function MoodPanel({ moodEntries, date, onMoodEntryChange }) {
     return getMoodInfo(todayMood?.mood_score || 5);
   }, [todayMood]);
 
-  // Función para renderizar los botones de selección de estado de ánimo
-  const renderMoodButtons = () => {
-    const buttons = [];
-    for (let i = 1; i <= 10; i++) {
-      const { emoji } = getMoodInfo(i);
-      buttons.push(
-        <button
-          key={i}
-          type="button"
-          className={`mood-button ${moodScore === i ? 'active' : ''}`}
-          onClick={() => setMoodScore(i)}
-          disabled={loading}
-        >
-          <span className="mood-button-emoji">{emoji}</span>
-          <span className="mood-button-label">{i}</span>
-        </button>
-      );
-    }
-    return buttons;
-  };
+  // Renderizar el footer del modal
+  const renderModalFooter = () => (
+    <>
+      <button
+        type="button"
+        className="btn btn-secondary"
+        onClick={() => setIsModalOpen(false)}
+        disabled={loading}
+      >
+        Cancelar
+      </button>
+      <button
+        type="button"
+        className="btn btn-primary"
+        onClick={() => {
+          // Usar la referencia para llamar al método submitForm
+          if (formRef.current) {
+            formRef.current.submitForm();
+          }
+        }}
+        disabled={loading}
+      >
+        {loading ? 'Guardando...' : todayMood ? 'Actualizar' : 'Guardar'}
+      </button>
+    </>
+  );
 
   return (
     <div className="mood-panel">
@@ -154,7 +111,7 @@ function MoodPanel({ moodEntries, date, onMoodEntryChange }) {
         <div className="bento-card-actions">
           <button
             className="btn btn-icon"
-            onClick={toggleMoodForm}
+            onClick={openModal}
             title={todayMood ? "Editar estado de ánimo" : "Registrar estado de ánimo"}
           >
             {todayMood ? (
@@ -172,7 +129,7 @@ function MoodPanel({ moodEntries, date, onMoodEntryChange }) {
         </div>
       </div>
 
-      {!isAddingMood && todayMood ? (
+      {todayMood ? (
         <>
           <div className="mood-today">
             <div className="mood-emoji">{currentMoodInfo.emoji}</div>
@@ -204,110 +161,33 @@ function MoodPanel({ moodEntries, date, onMoodEntryChange }) {
             </div>
           )}
         </>
-      ) : !isAddingMood ? (
+      ) : (
         <div className="mood-empty">
           <p>No has registrado tu estado de ánimo hoy.</p>
           <button
             className="btn btn-primary"
-            onClick={toggleMoodForm}
+            onClick={openModal}
           >
             Registrar ahora
           </button>
         </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="mood-form">
-          <div className="form-group">
-            <label className="form-label">¿Cómo te sientes hoy?</label>
-            <div className="mood-buttons">
-              {renderMoodButtons()}
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Nivel de energía</label>
-            <input
-              type="range"
-              className="form-range"
-              min="1"
-              max="10"
-              value={energyLevel}
-              onChange={(e) => setEnergyLevel(parseInt(e.target.value))}
-              disabled={loading}
-            />
-            <div className="range-labels">
-              <span>Baja</span>
-              <span className="range-value">{energyLevel}</span>
-              <span>Alta</span>
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Nivel de ansiedad</label>
-            <input
-              type="range"
-              className="form-range"
-              min="1"
-              max="10"
-              value={anxietyLevel}
-              onChange={(e) => setAnxietyLevel(parseInt(e.target.value))}
-              disabled={loading}
-            />
-            <div className="range-labels">
-              <span>Baja</span>
-              <span className="range-value">{anxietyLevel}</span>
-              <span>Alta</span>
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Nivel de estrés</label>
-            <input
-              type="range"
-              className="form-range"
-              min="1"
-              max="10"
-              value={stressLevel}
-              onChange={(e) => setStressLevel(parseInt(e.target.value))}
-              disabled={loading}
-            />
-            <div className="range-labels">
-              <span>Bajo</span>
-              <span className="range-value">{stressLevel}</span>
-              <span>Alto</span>
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Notas (opcional)</label>
-            <textarea
-              className="form-control"
-              rows="3"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              disabled={loading}
-              placeholder="¿Qué ha influido en tu estado de ánimo hoy?"
-            ></textarea>
-          </div>
-
-          <div className="form-buttons">
-            <button
-              type="button"
-              className="btn btn-text"
-              onClick={toggleMoodForm}
-              disabled={loading}
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="btn btn-primary"
-              disabled={loading}
-            >
-              {loading ? 'Guardando...' : 'Guardar'}
-            </button>
-          </div>
-        </form>
       )}
+
+      {/* Modal para crear/editar estado de ánimo */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={todayMood ? "Editar estado de ánimo" : "Registrar estado de ánimo"}
+        footer={renderModalFooter()}
+        size="lg"
+      >
+        <MoodForm
+          ref={formRef}
+          initialData={todayMood}
+          onSubmit={handleFormSubmit}
+          isLoading={loading}
+        />
+      </Modal>
     </div>
   );
 }
