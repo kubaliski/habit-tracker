@@ -309,7 +309,10 @@ function HabitsPanel({ habits, date, onHabitCreated }) {
                 <div className="habit-name">{habit.name}</div>
                 <div className="habit-streak">
                   <span className="habit-streak-icon">🔥</span>
-                  <span>{habitStreaks[habit.id] || 0} días</span>
+                  <span>
+                    {habitStreaks[habit.id] || 0}
+                    {habitStreaks[habit.id] === 1 ? ' día' : ' días'}
+                  </span>
                 </div>
               </div>
 
