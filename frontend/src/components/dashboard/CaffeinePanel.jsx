@@ -1,4 +1,3 @@
-// components/dashboard/CaffeinePanel.jsx
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { GetAllCaffeineBeverages, CreateCaffeineIntake, DeleteCaffeineIntake, UpdateCaffeineIntake } from "@api/CaffeineController";
 import {Modal , ConfirmDialog} from '../ui'
@@ -41,6 +40,12 @@ function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDel
       console.error("Error formateando fecha:", e);
       return '';
     }
+  };
+
+  // Función para formatear números con 2 decimales
+  const formatCaffeineAmount = (amount) => {
+    if (amount === null || amount === undefined) return "0.00";
+    return Number(amount).toFixed(2);
   };
 
   const dateString = useMemo(() => {
@@ -264,7 +269,7 @@ function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDel
         </div>
 
         <div className="caffeine-info">
-          <div className="caffeine-total">{Math.round(todayTotal)} mg</div>
+          <div className="caffeine-total">{formatCaffeineAmount(todayTotal)} mg</div>
           <div className="caffeine-label">de cafeína {formatDate(date)}</div>
 
           <div className="caffeine-limit">
@@ -283,7 +288,7 @@ function CaffeinePanel({ intakes, todayTotal, date, onIntakeCreated, onIntakeDel
             <div key={intake.id} className="caffeine-log-item">
               <div className="caffeine-log-time">{formatTime(intake.timestamp)}</div>
               <div className="caffeine-log-beverage">{intake.beverage_name}</div>
-              <div className="caffeine-log-amount">{intake.total_caffeine} mg</div>
+              <div className="caffeine-log-amount">{formatCaffeineAmount(intake.total_caffeine)} mg</div>
               <div className="caffeine-log-actions">
                 <button
                   className="btn btn-icon btn-sm"
